@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-
   const init = () => {
     twikoo.init(Object.assign({
       el: '#twikoo-wrap',
-      envId: 'https://www.comput-psych.cn/twikoo',
+      envId: 'https://www.comput-psych.cn/twikoo/',
       region: '',
       onCommentLoaded: function () {
         btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-
     const countELement = document.getElementById('twikoo-count')
     if(!countELement) return
     twikoo.getCommentsCount({
-      envId: 'https://www.comput-psych.cn/twikoo',
+      envId: 'https://www.comput-psych.cn/twikoo/',
       region: '',
       urls: [window.location.pathname],
       includeReply: false
