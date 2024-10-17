@@ -1,0 +1,495 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>基于Hexo + Git + Nginx|GitHub Pages 一键部署、更新博客 | Yozuru's Blog</title><meta name="author" content="Yozuru"><meta name="copyright" content="Yozuru"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="HEXO简介 Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他标记语言）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。  它可以通过选择、配置 Themes 来定制个性化的博客页面。使用时只需要专注于博客内容的编辑即可，Hexo可以把 Markdown 类型的内容解析成 Html+CSS+JS的静态页面。 具体的安装、配置流程可参阅官方文档。本博客就是基于">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Hexo + Git + Nginx|GitHub Pages 一键部署、更新博客">
+<meta property="og:url" content="https://yozuru.cn/post/b622eccc.html">
+<meta property="og:site_name" content="Yozuru&#39;s Blog">
+<meta property="og:description" content="HEXO简介 Hexo 是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他标记语言）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。  它可以通过选择、配置 Themes 来定制个性化的博客页面。使用时只需要专注于博客内容的编辑即可，Hexo可以把 Markdown 类型的内容解析成 Html+CSS+JS的静态页面。 具体的安装、配置流程可参阅官方文档。本博客就是基于">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yozuru.cn/img/avatar.jpg">
+<meta property="article:published_time" content="2023-07-31T06:20:13.000Z">
+<meta property="article:modified_time" content="2024-10-17T08:07:00.346Z">
+<meta property="article:author" content="Yozuru">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yozuru.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yozuru.cn/post/b622eccc.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"HY3533WS6D","apiKey":"a2319d076c1243f0f625c769dfc80ecd","indexName":"blog_search","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '基于Hexo + Git + Nginx|GitHub Pages 一键部署、更新博客',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-17 16:07:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Yozuru's Blog"><img class="site-icon" src="/img/favicon.png"/><span class="site-name">Yozuru's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">基于Hexo + Git + Nginx|GitHub Pages 一键部署、更新博客</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-31T06:20:13.000Z" title="发表于 2023-07-31 14:20:13">2023-07-31</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-17T08:07:00.346Z" title="更新于 2024-10-17 16:07:00">2024-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/">编程日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/">技术方案</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title="基于Hexo + Git + Nginx|GitHub Pages 一键部署、更新博客"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/b622eccc.html#post-comment"><span id="twikoo-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="HEXO简介"><a href="#HEXO简介" class="headerlink" title="HEXO简介"></a>HEXO简介</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/">Hexo</a> 是一个快速、简洁且高效的博客框架。Hexo 使用 <a target="_blank" rel="noopener" href="http://daringfireball.net/projects/markdown/">Markdown</a>（或其他标记语言）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。</p>
+</blockquote>
+<p>它可以通过选择、配置 <a target="_blank" rel="noopener" href="https://hexo.io/themes/">Themes</a> 来定制个性化的博客页面。使用时只需要专注于博客内容的编辑即可，Hexo可以把 Markdown 类型的内容解析成 Html+CSS+JS的静态页面。</p>
+<p>具体的安装、配置流程可参阅官方文档。本博客就是基于 <strong>Hexo</strong> 框架+<a target="_blank" rel="noopener" href="https://butterfly.js.org/"><strong>Butterfly</strong></a> 主题 生成的。</p>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><h4 id="1、hexo-init"><a href="#1、hexo-init" class="headerlink" title="1、hexo init"></a>1、hexo init</h4><p><code>hexo init</code> 命令用于初始化本地文件夹为网站的根目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init [folder]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>folder</code> 可选参数，用以指定初始化目录的路径，若无指定则默认为当前目录</li>
+</ul>
+<h4 id="2、hexo-new"><a href="#2、hexo-new" class="headerlink" title="2、hexo new"></a>2、hexo new</h4><p><code>hexo new</code> 命令用于新建文章，一般可以简写为 <code>hexo n</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new [layout] &lt;title&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>layout</code> 可选参数，用以指定文章类型，若无指定则默认由配置文件中的 default_layout 选项决定</li>
+<li><code>title</code> 必填参数，用以指定文章标题，如果参数值中含有空格，则需要使用双引号包围</li>
+</ul>
+<h4 id="3、hexo-generate"><a href="#3、hexo-generate" class="headerlink" title="3、hexo generate"></a>3、hexo generate</h4><p><code>hexo generate</code> 命令用于生成静态文件，一般可以简写为 <code>hexo g</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-d</code> 选项，指定生成后部署，与 <code>hexo d -g</code> 等价</li>
+</ul>
+<p>详细信息请参考：<a target="_blank" rel="noopener" href="https://hexo.io/docs/generating">https://hexo.io/docs/generating</a></p>
+<h4 id="4、hexo-server"><a href="#4、hexo-server" class="headerlink" title="4、hexo server"></a>4、hexo server</h4><p><code>hexo server</code> 命令用于启动本地服务器，一般可以简写为 <code>hexo s</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo server</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-p</code> 选项，指定服务器端口，默认为 4000</li>
+<li><code>-i</code> 选项，指定服务器 IP 地址，默认为 0.0.0.0</li>
+<li><code>-s</code> 选项，静态模式 ，仅提供 public 文件夹中的文件并禁用文件监视</li>
+</ul>
+<h4 id="5、hexo-deploy"><a href="#5、hexo-deploy" class="headerlink" title="5、hexo deploy"></a>5、hexo deploy</h4><p><code>hexo deploy</code> 命令用于部署网站，一般可以简写为 <code>hexo d</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-g</code> 选项，指定生成后部署，与 <code>hexo g -d</code> 等价</li>
+</ul>
+<h4 id="6、hexo-clean"><a href="#6、hexo-clean" class="headerlink" title="6、hexo clean"></a>6、hexo clean</h4><p><code>hexo clean</code> 命令用于清除 <code>hexo generate</code> 产生的静态网页文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="部署流程——GitHub-Pages"><a href="#部署流程——GitHub-Pages" class="headerlink" title="部署流程——GitHub Pages"></a>部署流程——GitHub Pages</h1><h3 id="Github-Pages简介"><a href="#Github-Pages简介" class="headerlink" title="Github Pages简介"></a>Github Pages简介</h3><blockquote>
+<p>Websites for you and your projects.<br>Hosted directly from your <a target="_blank" rel="noopener" href="https://github.com/">GitHub repository</a>. Just edit, push, and your changes are live.</p>
+<p>您和您的项目的网站。<br>直接从您的<a target="_blank" rel="noopener" href="https://github.com/">GitHub仓库</a>托管。只需编辑、推送，您的更改就会实时生效。</p>
+</blockquote>
+<p><a href="">GitHub Pages</a>是GitHub提供的一个免费的静态网站托管服务。它允许用户将自己的 GitHub 仓库转换成一个公开访问的静态网站。这意味着您可以将存储库中的HTML、CSS、JavaScript等静态文件直接部署为一个可通过浏览器访问的网站，而无需搭建服务器或后端代码。</p>
+<p>通过将代码提交到GitHub存储库，您的网站会自动构建和更新。您可以选择使用GitHub提供的默认域名，或者绑定自己已拥有的域名来访问网站。</p>
+<h3 id="（一）创建-GitHub-仓库"><a href="#（一）创建-GitHub-仓库" class="headerlink" title="（一）创建 GitHub 仓库"></a>（一）创建 GitHub 仓库</h3><p>需要 注册 <a target="_blank" rel="noopener" href="https://github.com/signup">GitHub</a> 账号并 <a target="_blank" rel="noopener" href="https://github.com/new">创建</a> GitHub 仓库来放置网页的静态文件</p>
+<ul>
+<li>仓库名的格式必须为<code>&lt;用户名&gt;.github.io</code> 用户名填写自己的</li>
+<li>之后部署成功后访问URL即为<code>&lt;用户名&gt;.github.io</code></li>
+</ul>
+<h3 id="（二）配置SSH"><a href="#（二）配置SSH" class="headerlink" title="（二）配置SSH"></a>（二）配置SSH</h3><p>本地生成SSH公私钥后，把公钥设置到Github账号中，这里不做过多说明。具体操作可自行查阅。</p>
+<h3 id="（三）生成静态网页"><a href="#（三）生成静态网页" class="headerlink" title="（三）生成静态网页"></a>（三）生成静态网页</h3><p>在Hexo工程的根目录执行 <code>hexo generate</code> ，Hexo则会解析source文件夹内的Markdown文件，在public文件夹中渲染、生成为静态网页文件</p>
+<ul>
+<li>建议生成之前先执行<code>hexo clean</code> 清除上一次生成的文件，避免引起预料外的错误。</li>
+</ul>
+<h3 id="（四）部署"><a href="#（四）部署" class="headerlink" title="（四）部署"></a>（四）部署</h3><p>在运行<code>hexo deploy</code> 命令一键部署之前，需要先修改Hexo工程根目录下的<code>_config.yml</code>文件，配置部署的参数</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repository:</span> <span class="string">git@github.com:Kagenui-yozuru/Kagenui-yozuru.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>type</code> ：部署类型，这里固定填<strong>git</strong></p>
+</li>
+<li><p><code>repository</code>：仓库地址，换成自己仓库的SSH访问地址</p>
+<ul>
+<li>SSH访问地址可以在仓库界面 <strong>Code</strong> 按钮、SSH选项里获取</li>
+</ul>
+</li>
+<li><p><code>branch</code>：分支名，因为是静态文件，直接推送至主分支即可。<strong>GitHub</strong> 主分支的名称默认为 <code>main</code></p>
+</li>
+</ul>
+<p>配置完成后在Hexo工程的根目录执行 <code>hexo deploy</code>  命令即可完成部署。</p>
+<h3 id="存在问题"><a href="#存在问题" class="headerlink" title="存在问题"></a>存在问题</h3><ul>
+<li>由于网络防火墙的存在，GitHub在国内完全是随缘访问的，在正常的网络环境下访问延迟很高。即使 ”<a target="_blank" rel="noopener" href="https://new.qq.com/rain/a/20230418A07DRN00">我国开源软件开发者数量突破<strong>800万</strong></a>”，这800万名开源软件开发者也不能合法访问Github。所以<strong>GitHub Pages</strong>只能作为一个低成本、便捷的部署方案，可用性很低。</li>
+</ul>
+<h1 id="部署流程——Nginx-Git"><a href="#部署流程——Nginx-Git" class="headerlink" title="部署流程——Nginx+Git"></a>部署流程——Nginx+Git</h1><h3 id="方案简介"><a href="#方案简介" class="headerlink" title="方案简介"></a>方案简介</h3><p>刚才提到了<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/">Hexo</a> 为静态博客。要想将博客部署到私有服务器，只需要把Hexo生成(generate)的静态网页文件上传至服务器。然后通过配置<a target="_blank" rel="noopener" href="http://www.nginx-cn.net/">Nginx</a>访问静态文件就可以了。</p>
+<p>并且由于Hexo本身支持以Git的方式部署，所以我们可以把Git作为静态网页文件上传至服务器的方案。最终可以实现通过<code>hexo deploy</code> 命令部署。</p>
+<p>大致流程为：</p>
+<ol>
+<li><p>写博客。并将博客文件放到<code>source</code>文件夹下。</p>
+</li>
+<li><p>通过<code>hexo g</code>将<code>source</code>文件夹下的<code>.md</code>文件生成静态网页文件，放置于<code>public</code>。</p>
+</li>
+<li><p>执行<code>hexo d</code>将<code>public</code>下的文件通过<code>git</code>同步到私有服务器上的远程仓库。</p>
+<ul>
+<li>和部署至GitHub Pages 稍有不同的是，这里是将文件同步到自己的私有服务器而非Github</li>
+</ul>
+</li>
+<li><p>将服务器上Nginx的静态资源文件夹与仓库绑定</p>
+</li>
+<li><p>访问博客的网址，通过<code>Nginx</code>访问服务器上存放的静态文件。</p>
+</li>
+</ol>
+<h3 id="（一）配置Git"><a href="#（一）配置Git" class="headerlink" title="（一）配置Git"></a>（一）配置Git</h3><h4 id="1、服务器安装配置git"><a href="#1、服务器安装配置git" class="headerlink" title="1、服务器安装配置git"></a>1、服务器安装配置git</h4><h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><p>不同Linux系统安装Git的命令不同，下面以CentOS为例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install git</span><br></pre></td></tr></table></figure>
+
+<h5 id="创建git用户"><a href="#创建git用户" class="headerlink" title="创建git用户"></a>创建git用户</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">useradd  git  # 需要root权限</span><br><span class="line">passwd git</span><br></pre></td></tr></table></figure>
+
+<h5 id="创建一个Git仓库"><a href="#创建一个Git仓库" class="headerlink" title="创建一个Git仓库"></a>创建一个Git仓库</h5><p>我把仓库放在了git用户的工作目录<code>/home/git/blog.git</code>。注意这个文件夹并不是存放网页静态文件的地方。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /home/git</span><br><span class="line">git init --bare blog.git</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注意，要以<strong>git</strong>用户执行以上命令</li>
+</ul>
+<h5 id="创建存放网页静态文件的文件夹"><a href="#创建存放网页静态文件的文件夹" class="headerlink" title="创建存放网页静态文件的文件夹"></a>创建存放网页静态文件的文件夹</h5><p>我将文件放在了<code>/root/nginx/html</code>。在创建在root目录下不是好习惯，不要学。建议<code>home</code>文件夹下。</p>
+<h5 id="配置Git-Hooks，实现自动化部署"><a href="#配置Git-Hooks，实现自动化部署" class="headerlink" title="配置Git Hooks，实现自动化部署"></a>配置Git Hooks，实现自动化部署</h5><p>进入git仓库的<code>hooks</code>目录，创建<code>post-receive</code>文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /home/git/blog.git/hooks</span><br><span class="line">vi post-receive</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注意，要以<strong>git</strong>用户执行以上命令</li>
+</ul>
+<p>将如下内容复制进去，该内容可以将git仓库的内容复制到另外的文件夹下。（注意修改路径地址。，。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git --work-tree=/root/nginx/html --git-dir=/home/git/blog.git checkout -f</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>work-tree</code>为你刚刚创建存放网页静态文件的文件夹</li>
+<li><code>git-dir</code>是刚创建的Git仓库的地址</li>
+</ul>
+<p>给<code>post-receive</code>文件以可执行权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> +x post-receive</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、配置git用户的SSH连接"><a href="#2、配置git用户的SSH连接" class="headerlink" title="2、配置git用户的SSH连接"></a>2、配置git用户的SSH连接</h4><p>进入git用户目录<code>/home/git</code>，创建文件夹<code>.ssh</code>，进入该文件夹创建文件<code>authorized_keys</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /home/git</span><br><span class="line"><span class="built_in">mkdir</span> .ssh</span><br><span class="line"><span class="built_in">cd</span> .ssh</span><br><span class="line">vi authorized_keys</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注意，要以<strong>git</strong>用户执行以上命令</li>
+</ul>
+<p>把本地的SSH公钥粘贴进去。</p>
+<p>修改文件权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 需要权限</span></span><br><span class="line"><span class="built_in">chown</span> git:git /home/git/.ssh/authorized_keys</span><br><span class="line"><span class="built_in">chmod</span> 600 /home/git/.ssh/authorized_keys</span><br><span class="line"><span class="built_in">chmod</span> 700 /home/git/.ssh</span><br></pre></td></tr></table></figure>
+
+<p>完成后，在本地主机就可实现免密操作git了。</p>
+<h4 id="3、修改Nginx静态资源文件夹的权限"><a href="#3、修改Nginx静态资源文件夹的权限" class="headerlink" title="3、修改Nginx静态资源文件夹的权限"></a>3、修改Nginx静态资源文件夹的权限</h4><p>确保git用户拥有对资源文件的访问权限</p>
+<p>切换至root用户，执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> -R 777 /root/nginx/html</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>后面的路径为存放Nginx静态文件夹</li>
+</ul>
+<h4 id="4、为git用户添加操作Docker的权限"><a href="#4、为git用户添加操作Docker的权限" class="headerlink" title="4、为git用户添加操作Docker的权限"></a>4、为git用户添加操作Docker的权限</h4><p>由于这次基于Docker来部署Nginx服务，为了方便远程操控Nginx，则需要给git用户操控docker的权限</p>
+<p>切换至root用户，执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">usermod -aG docker git</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<h3 id="（二）配置HEXO"><a href="#（二）配置HEXO" class="headerlink" title="（二）配置HEXO"></a>（二）配置HEXO</h3><p>修改Hexo工程根目录下的<code>_config.yml</code>文件，配置部署的参数</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repository:</span> <span class="string">git@&lt;你的服务器ip&gt;:&lt;刚创建仓库的路径&gt;</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>type</code> ：部署类型，这里固定填<strong>git</strong></p>
+</li>
+<li><p><code>repository</code>：仓库地址，换成自己仓库的SSH访问地址</p>
+<ul>
+<li>把<code>你的服务器ip</code>和<code>仓库的绝对路径</code>修改为自己的信息</li>
+</ul>
+</li>
+<li><p><code>branch</code>：分支名，填写master即可</p>
+</li>
+</ul>
+<p>修改完后在本地执行<code>hexo d</code>，如果提示成功了，则Hexo会通过git将博客部署到服务器上。</p>
+<p>此时连接服务器打开你存放网页静态文件的文件夹，查看是否有文件，看和本地hexo下public里的内容是否一致。</p>
+<p>此后，更新博客内容只需要在本地执行以下命令即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
+
+<h3 id="（三）部署Nginx"><a href="#（三）部署Nginx" class="headerlink" title="（三）部署Nginx"></a>（三）部署Nginx</h3><p>现在已经可以将Hexo博客文件传输到服务器上了，但是我们还无法从外部访问。</p>
+<p>最后一步，部署Nginx服务器，这里是通过 Docker-Compose 部署的</p>
+<h4 id="1、创建Nginx工作目录"><a href="#1、创建Nginx工作目录" class="headerlink" title="1、创建Nginx工作目录"></a>1、创建Nginx工作目录</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir /root/nginx  </span><br><span class="line">cd /root/nginx  </span><br></pre></td></tr></table></figure>
+
+<h4 id="2、创建docker-compose-yml文件，并编辑内容"><a href="#2、创建docker-compose-yml文件，并编辑内容" class="headerlink" title="2、创建docker-compose.yml文件，并编辑内容"></a>2、创建docker-compose.yml文件，并编辑内容</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3&quot;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  nginx:</span><br><span class="line">    image: nginx:1.18.0</span><br><span class="line">    container_name: nginx</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;80:80&quot;</span><br><span class="line">      - &quot;443:443&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - /root/nginx/html:/usr/share/nginx/html</span><br><span class="line">      - /root/nginx/logs:/var/log/nginx</span><br><span class="line">      - /root/nginx/nginx.conf:/etc/nginx/nginx.conf</span><br><span class="line">      - /root/nginx/certs:/etc/nginx/conf.d/cert</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注意数据卷里第一个<code>/root/nginx/html:/usr/share/nginx/html</code><ul>
+<li>其中<code>/root/nginx/html</code>必须为刚才创建的用于放置静态资源的文件夹</li>
+</ul>
+</li>
+</ul>
+<h4 id="3、创建nginx-conf文件，配置容器内的Nginx"><a href="#3、创建nginx-conf文件，配置容器内的Nginx" class="headerlink" title="3、创建nginx.conf文件，配置容器内的Nginx"></a>3、创建nginx.conf文件，配置容器内的Nginx</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">worker_processes 1;</span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections 1024;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line"></span><br><span class="line"> 	include       mime.types;</span><br><span class="line">    server &#123;</span><br><span class="line">        listen 80;</span><br><span class="line">        server_name localhost;</span><br><span class="line">        location / &#123;</span><br><span class="line">            root  /usr/share/nginx/html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4、启动Nginx"><a href="#4、启动Nginx" class="headerlink" title="4、启动Nginx"></a>4、启动Nginx</h4><p>在当前目录下执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>至此，外部已经可以通过服务器地址访问博客了。</p>
+<h1 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h1><h3 id="（一）多端部署"><a href="#（一）多端部署" class="headerlink" title="（一）多端部署"></a>（一）多端部署</h3><p>刚才介绍了两种部署方案，各有优劣，那么这两种部署方式可以同时实现吗？当然可以。只需要修改Hexo的配置文件即可：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">    <span class="attr">repository:</span> <span class="string">git@github.com:Kagenui-yozuru/Kagenui-yozuru.github.io.git</span></span><br><span class="line">    <span class="attr">branch:</span> <span class="string">main</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">    <span class="attr">repository:</span> <span class="string">git@&lt;你的服务器ip&gt;:&lt;刚创建仓库的路径&gt;</span></span><br><span class="line">    <span class="attr">branch:</span> <span class="string">master</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">……其它的部署方案</span></span><br></pre></td></tr></table></figure>
+
+<p>将前两种部署方案的配置以<strong>数组</strong>的形式整合进配置文件即可。这样在执行 <code>hexo deploy</code>时将会同时执行这两种部署操作。（我全都要） </p>
+<h3 id="（二）Hexo源文件的版本控制"><a href="#（二）Hexo源文件的版本控制" class="headerlink" title="（二）Hexo源文件的版本控制"></a>（二）Hexo源文件的版本控制</h3><p>因为从Hexo源文件到静态网页文件这个过程是不可逆的，所以如果本地的Hexo源文件丢失，博客数据将无法恢复。以防万一还是用Git对Hexo源文件进行一下版本控制。</p>
+<p>先在GitHub上创建仓库 hexo-origin。</p>
+<p>在Hexo根目录下创建.gitignore文件，写入以下内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">node_modules/</span><br><span class="line">.deploy_git/</span><br><span class="line">public/</span><br><span class="line">.github/</span><br></pre></td></tr></table></figure>
+
+<p>在Hexo根目录下运行以下命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git remote add origin &lt;remote-url&gt;</span><br><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;Initial commit&quot;</span></span><br><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+
+<p>这样每次部署的时候也更新一下这个仓库就可以了。</p>
+<h3 id="（三）使用bat脚本简化操作"><a href="#（三）使用bat脚本简化操作" class="headerlink" title="（三）使用bat脚本简化操作"></a>（三）使用bat脚本简化操作</h3><p>之后我们每次更新博客都需要在本地执行以下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>为了防止出现预料外的问题，每次更新后也要重载Nginx。</p>
+<p>这是重复性的操作，可以通过bat脚本完成。</p>
+<p>在本地新建xxx.bat。并编辑其内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line"><span class="built_in">set</span> <span class="string">&quot;project_path=F:\Documents\hexo\butterfly&quot;</span></span><br><span class="line"><span class="built_in">cd</span> /d %project_path%</span><br><span class="line"></span><br><span class="line">call hexo clean</span><br><span class="line">call hexo generate</span><br><span class="line">call hexo deploy</span><br><span class="line"></span><br><span class="line">ssh git@&lt;服务器ip&gt; <span class="string">&quot;docker exec -t &lt;nginx容器名称&gt; bash -c &#x27;nginx -s reload&#x27;&quot;</span></span><br><span class="line"></span><br><span class="line">call git add .</span><br><span class="line">call git commit -m <span class="string">&quot;auto update&quot;</span></span><br><span class="line">call git push</span><br><span class="line">pause</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>project_path</code> 需要修改为Hexo工程的根目录</li>
+<li>把<code>&lt;服务器ip&gt;</code>修改为自己的服务器ip</li>
+<li>把<code>&lt;nginx容器名称&gt;</code>修改为服务器正在运行的Nginx容器名称，若按照我提供的docker-compose.yml文件，则是<code>nginx</code></li>
+</ul>
+<blockquote>
+<p>之后，每次写完新的博客，在本地运行这个bat文件即可实现一键多端部署！并且还会更新源文件到远端！太优雅了！</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yozuru.cn">Yozuru</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yozuru.cn/post/b622eccc.html">https://yozuru.cn/post/b622eccc.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yozuru.cn" target="_blank">Yozuru's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Docker/">Docker</a><a class="post-meta__tags" href="/tags/Hexo/">Hexo</a><a class="post-meta__tags" href="/tags/Nginx/">Nginx</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/dbea8968.html" title="基于Docker私有化部署TeamSpeak3服务端"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-16</div><div class="title">基于Docker私有化部署TeamSpeak3服务端</div></div></a></div><div><a href="/post/6f1d7a0f.html" title="如何优雅地把SpringBoot项目部署到服务端Docker"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">如何优雅地把SpringBoot项目部署到服务端Docker</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HEXO%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">HEXO简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">1.0.1.</span> <span class="toc-text">常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81hexo-init"><span class="toc-number">1.0.1.1.</span> <span class="toc-text">1、hexo init</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81hexo-new"><span class="toc-number">1.0.1.2.</span> <span class="toc-text">2、hexo new</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81hexo-generate"><span class="toc-number">1.0.1.3.</span> <span class="toc-text">3、hexo generate</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81hexo-server"><span class="toc-number">1.0.1.4.</span> <span class="toc-text">4、hexo server</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5%E3%80%81hexo-deploy"><span class="toc-number">1.0.1.5.</span> <span class="toc-text">5、hexo deploy</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6%E3%80%81hexo-clean"><span class="toc-number">1.0.1.6.</span> <span class="toc-text">6、hexo clean</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B%E2%80%94%E2%80%94GitHub-Pages"><span class="toc-number">2.</span> <span class="toc-text">部署流程——GitHub Pages</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Github-Pages%E7%AE%80%E4%BB%8B"><span class="toc-number">2.0.1.</span> <span class="toc-text">Github Pages简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89%E5%88%9B%E5%BB%BA-GitHub-%E4%BB%93%E5%BA%93"><span class="toc-number">2.0.2.</span> <span class="toc-text">（一）创建 GitHub 仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89%E9%85%8D%E7%BD%AESSH"><span class="toc-number">2.0.3.</span> <span class="toc-text">（二）配置SSH</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89%E7%94%9F%E6%88%90%E9%9D%99%E6%80%81%E7%BD%91%E9%A1%B5"><span class="toc-number">2.0.4.</span> <span class="toc-text">（三）生成静态网页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E5%9B%9B%EF%BC%89%E9%83%A8%E7%BD%B2"><span class="toc-number">2.0.5.</span> <span class="toc-text">（四）部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%9C%A8%E9%97%AE%E9%A2%98"><span class="toc-number">2.0.6.</span> <span class="toc-text">存在问题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B%E2%80%94%E2%80%94Nginx-Git"><span class="toc-number">3.</span> <span class="toc-text">部署流程——Nginx+Git</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E7%AE%80%E4%BB%8B"><span class="toc-number">3.0.1.</span> <span class="toc-text">方案简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89%E9%85%8D%E7%BD%AEGit"><span class="toc-number">3.0.2.</span> <span class="toc-text">（一）配置Git</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEgit"><span class="toc-number">3.0.2.1.</span> <span class="toc-text">1、服务器安装配置git</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">3.0.2.1.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAgit%E7%94%A8%E6%88%B7"><span class="toc-number">3.0.2.1.2.</span> <span class="toc-text">创建git用户</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAGit%E4%BB%93%E5%BA%93"><span class="toc-number">3.0.2.1.3.</span> <span class="toc-text">创建一个Git仓库</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%AD%98%E6%94%BE%E7%BD%91%E9%A1%B5%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E7%9A%84%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-number">3.0.2.1.4.</span> <span class="toc-text">创建存放网页静态文件的文件夹</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEGit-Hooks%EF%BC%8C%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2"><span class="toc-number">3.0.2.1.5.</span> <span class="toc-text">配置Git Hooks，实现自动化部署</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E9%85%8D%E7%BD%AEgit%E7%94%A8%E6%88%B7%E7%9A%84SSH%E8%BF%9E%E6%8E%A5"><span class="toc-number">3.0.2.2.</span> <span class="toc-text">2、配置git用户的SSH连接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E4%BF%AE%E6%94%B9Nginx%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E5%A4%B9%E7%9A%84%E6%9D%83%E9%99%90"><span class="toc-number">3.0.2.3.</span> <span class="toc-text">3、修改Nginx静态资源文件夹的权限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E4%B8%BAgit%E7%94%A8%E6%88%B7%E6%B7%BB%E5%8A%A0%E6%93%8D%E4%BD%9CDocker%E7%9A%84%E6%9D%83%E9%99%90"><span class="toc-number">3.0.2.4.</span> <span class="toc-text">4、为git用户添加操作Docker的权限</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89%E9%85%8D%E7%BD%AEHEXO"><span class="toc-number">3.0.3.</span> <span class="toc-text">（二）配置HEXO</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89%E9%83%A8%E7%BD%B2Nginx"><span class="toc-number">3.0.4.</span> <span class="toc-text">（三）部署Nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%E3%80%81%E5%88%9B%E5%BB%BANginx%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="toc-number">3.0.4.1.</span> <span class="toc-text">1、创建Nginx工作目录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%E3%80%81%E5%88%9B%E5%BB%BAdocker-compose-yml%E6%96%87%E4%BB%B6%EF%BC%8C%E5%B9%B6%E7%BC%96%E8%BE%91%E5%86%85%E5%AE%B9"><span class="toc-number">3.0.4.2.</span> <span class="toc-text">2、创建docker-compose.yml文件，并编辑内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%E3%80%81%E5%88%9B%E5%BB%BAnginx-conf%E6%96%87%E4%BB%B6%EF%BC%8C%E9%85%8D%E7%BD%AE%E5%AE%B9%E5%99%A8%E5%86%85%E7%9A%84Nginx"><span class="toc-number">3.0.4.3.</span> <span class="toc-text">3、创建nginx.conf文件，配置容器内的Nginx</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4%E3%80%81%E5%90%AF%E5%8A%A8Nginx"><span class="toc-number">3.0.4.4.</span> <span class="toc-text">4、启动Nginx</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A1%A5%E5%85%85"><span class="toc-number">4.</span> <span class="toc-text">补充</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89%E5%A4%9A%E7%AB%AF%E9%83%A8%E7%BD%B2"><span class="toc-number">4.0.1.</span> <span class="toc-text">（一）多端部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89Hexo%E6%BA%90%E6%96%87%E4%BB%B6%E7%9A%84%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6"><span class="toc-number">4.0.2.</span> <span class="toc-text">（二）Hexo源文件的版本控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89%E4%BD%BF%E7%94%A8bat%E8%84%9A%E6%9C%AC%E7%AE%80%E5%8C%96%E6%93%8D%E4%BD%9C"><span class="toc-number">4.0.3.</span> <span class="toc-text">（三）使用bat脚本简化操作</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/default_top.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Yozuru</div><div class="footer_custom_text">Hi, welcome to my blog.</br><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">豫ICP备2023018923号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.textContent = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '1gRcPIUcCbZVQE6BdQZFSn80-gzGzoHsz',
+      appKey: 'urPscmzTqJuEnp3LDCdod6pz',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>

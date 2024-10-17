@@ -1,0 +1,364 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>超酷的终端——Oh My Zsh | Yozuru's Blog</title><meta name="author" content="Yozuru"><meta name="copyright" content="Yozuru"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Oh-My-Zsh传统的 Bash 功能相对简陋，且界面不美观。本文将基于 Ubuntu 22.04 LTS 系统，介绍如何安装 Zsh，并通过 Oh-My-Zsh 对终端进行美化。 Oh My Zsh 是基于 Zsh 的一款扩展工具集，提供了丰富的功能和美化选项。 1. 环境配置1.1 安装基础工具1234# 更新软件源sudo apt update &amp;&amp; sudo apt up">
+<meta property="og:type" content="article">
+<meta property="og:title" content="超酷的终端——Oh My Zsh">
+<meta property="og:url" content="https://yozuru.cn/post/c912cbca.html">
+<meta property="og:site_name" content="Yozuru&#39;s Blog">
+<meta property="og:description" content="Oh-My-Zsh传统的 Bash 功能相对简陋，且界面不美观。本文将基于 Ubuntu 22.04 LTS 系统，介绍如何安装 Zsh，并通过 Oh-My-Zsh 对终端进行美化。 Oh My Zsh 是基于 Zsh 的一款扩展工具集，提供了丰富的功能和美化选项。 1. 环境配置1.1 安装基础工具1234# 更新软件源sudo apt update &amp;&amp; sudo apt up">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yozuru.cn/img/avatar.jpg">
+<meta property="article:published_time" content="2024-10-16T03:23:38.000Z">
+<meta property="article:modified_time" content="2024-10-17T08:27:44.844Z">
+<meta property="article:author" content="Yozuru">
+<meta property="article:tag" content="Oh My Zsh">
+<meta property="article:tag" content="Shell">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yozuru.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yozuru.cn/post/c912cbca.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"HY3533WS6D","apiKey":"a2319d076c1243f0f625c769dfc80ecd","indexName":"blog_search","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '超酷的终端——Oh My Zsh',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-17 16:27:44'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Yozuru's Blog"><img class="site-icon" src="/img/favicon.png"/><span class="site-name">Yozuru's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">超酷的终端——Oh My Zsh</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-16T03:23:38.000Z" title="发表于 2024-10-16 11:23:38">2024-10-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-17T08:27:44.844Z" title="更新于 2024-10-17 16:27:44">2024-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BD%AF%E4%BB%B6%E6%8E%A8%E8%8D%90/">软件推荐</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title="超酷的终端——Oh My Zsh"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/c912cbca.html#post-comment"><span id="twikoo-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Oh-My-Zsh"><a href="#Oh-My-Zsh" class="headerlink" title="Oh-My-Zsh"></a>Oh-My-Zsh</h1><p>传统的 Bash 功能相对简陋，且界面不美观。本文将基于 Ubuntu 22.04 LTS 系统，介绍如何安装 Zsh，并通过 Oh-My-Zsh 对终端进行美化。</p>
+<p>Oh My Zsh 是基于 Zsh 的一款扩展工具集，提供了丰富的功能和美化选项。</p>
+<h2 id="1-环境配置"><a href="#1-环境配置" class="headerlink" title="1. 环境配置"></a>1. 环境配置</h2><h3 id="1-1-安装基础工具"><a href="#1-1-安装基础工具" class="headerlink" title="1.1 安装基础工具"></a>1.1 安装基础工具</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更新软件源</span></span><br><span class="line">sudo apt update &amp;&amp; sudo apt upgrade -y</span><br><span class="line"><span class="comment"># 安装 Zsh、Git 和 Curl</span></span><br><span class="line">sudo apt install zsh git curl -y</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-安装-Oh-My-Zsh"><a href="#1-2-安装-Oh-My-Zsh" class="headerlink" title="1.2 安装 Oh My Zsh"></a>1.2 安装 Oh My Zsh</h3><p>官网：<a target="_blank" rel="noopener" href="https://ohmyz.sh/">ohmyz.sh</a></p>
+<p>可以选择以下任意安装方式：</p>
+<p><strong>Curl 方法：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://install.ohmyz.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Wget 方法：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c <span class="string">&quot;<span class="subst">$(wget -O- https://install.ohmyz.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>国内镜像（Curl）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://gitee.com/pocmon/ohmyzsh/raw/master/tools/install.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>国内镜像（Wget）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c <span class="string">&quot;<span class="subst">$(wget -O- https://gitee.com/pocmon/ohmyzsh/raw/master/tools/install.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong>：安装过程中，如果提示是否使用 Oh My Zsh 的默认配置模板覆盖现有的 <code>.zshrc</code>，建议同意，这样可以避免一些配置问题。</p>
+</blockquote>
+<h3 id="1-3-迁移-bashrc-配置（可选）"><a href="#1-3-迁移-bashrc-配置（可选）" class="headerlink" title="1.3 迁移 .bashrc 配置（可选）"></a>1.3 迁移 <code>.bashrc</code> 配置（可选）</h3><p>如果你之前在 Bash 中自定义了一些环境变量或别名，不想失去，可以手动迁移到 Zsh 中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看 bash 配置文件并手动复制自定义配置</span></span><br><span class="line"><span class="built_in">cat</span> ~/.bashrc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编辑 zsh 配置文件并粘贴自定义配置</span></span><br><span class="line">vim ~/.zshrc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使新的 zsh 配置生效</span></span><br><span class="line"><span class="built_in">source</span> ~/.zshrc</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>提示</strong>：若以 <code>sudo su</code> 切换到 root 用户，需重复上述步骤以查看、复制并迁移配置。</p>
+</blockquote>
+<h2 id="2-配置主题"><a href="#2-配置主题" class="headerlink" title="2. 配置主题"></a>2. 配置主题</h2><p>正如标题而言，炫酷的主题才是吸引我使用它的主要原因。Oh My Zsh 提供了大量的主题供我们选择。</p>
+<h3 id="2-1-自定义主题"><a href="#2-1-自定义主题" class="headerlink" title="2.1 自定义主题"></a>2.1 自定义主题</h3><p>下载自定义主题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo wget -O <span class="variable">$ZSH_CUSTOM</span>/themes/haoomz.zsh-theme https://cdn.haoyep.com/gh/leegical/Blog_img/zsh/haoomz.zsh-theme</span><br></pre></td></tr></table></figure>
+
+<p>编辑 <code>~/.zshrc</code> 文件，将 <code>ZSH_THEME</code> 设置为 <code>haoomz</code>，或选择其他主题如 <code>lukerandall</code>、<code>robbyrussell</code> 等。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.zshrc</span><br><span class="line">ZSH_THEME=<span class="string">&quot;haoomz&quot;</span></span><br><span class="line"><span class="built_in">source</span> ~/.zshrc</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-推荐主题"><a href="#2-2-推荐主题" class="headerlink" title="2.2 推荐主题"></a>2.2 推荐主题</h3><p>你可以查看 Oh My Zsh 自带的主题样式，这些主题位于 <code>~/.oh-my-zsh/themes</code> 目录，无需额外下载。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/.oh-my-zsh/themes &amp;&amp; <span class="built_in">ls</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-1-powerlevel10k"><a href="#2-2-1-powerlevel10k" class="headerlink" title="2.2.1 powerlevel10k"></a>2.2.1 powerlevel10k</h4><p>根据 <a target="_blank" rel="noopener" href="https://github.com/romkatv/powerlevel10k">What’s the best theme for Oh My Zsh</a> 的推荐，<code>powerlevel10k</code> 主题美观且高度可定制，强烈推荐。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --depth=1 https://github.com/romkatv/powerlevel10k.git <span class="variable">$&#123;ZSH_CUSTOM:-<span class="variable">$HOME</span>/.oh-my-zsh/custom&#125;</span>/themes/powerlevel10k</span><br><span class="line"></span><br><span class="line"><span class="comment"># 国内用户可使用 gitee 镜像</span></span><br><span class="line">git <span class="built_in">clone</span> --depth=1 https://gitee.com/romkatv/powerlevel10k.git <span class="variable">$&#123;ZSH_CUSTOM:-<span class="variable">$HOME</span>/.oh-my-zsh/custom&#125;</span>/themes/powerlevel10k</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>~/.zshrc</code> 中设置主题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZSH_THEME=<span class="string">&quot;powerlevel10k/powerlevel10k&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>保存后，重新启动终端，<code>powerlevel10k</code> 会引导你进行个性化配置，根据提示一步步设置，就能拥有一个专属的终端界面！</p>
+<p><img src="https://oss.yozuru.cn/public/image/2024/10/5i2km276ft.png" alt="5i2km276ft.png"></p>
+<h2 id="3-安装插件"><a href="#3-安装插件" class="headerlink" title="3. 安装插件"></a>3. 安装插件</h2><p>Oh My Zsh 已内置了 Git 插件，其他内置插件位于 <code>~/.oh-my-zsh/plugins</code> 目录下。以下是几个常用插件的介绍，更多插件可参考 <a target="_blank" rel="noopener" href="https://github.com/unixorn/awesome-zsh-plugins">awesome-zsh-plugins</a>。</p>
+<h3 id="3-1-推荐插件"><a href="#3-1-推荐插件" class="headerlink" title="3.1 推荐插件"></a>3.1 推荐插件</h3><h4 id="3-1-1-zsh-autosuggestions"><a href="#3-1-1-zsh-autosuggestions" class="headerlink" title="3.1.1 zsh-autosuggestions"></a>3.1.1 zsh-autosuggestions</h4><p><code>zsh-autosuggestions</code> 是一个命令提示插件，它会根据你输入的命令自动提供建议，按右键即可快速接受。</p>
+<p>安装方式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions <span class="variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-autosuggestions</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-2-zsh-syntax-highlighting"><a href="#3-1-2-zsh-syntax-highlighting" class="headerlink" title="3.1.2 zsh-syntax-highlighting"></a>3.1.2 zsh-syntax-highlighting</h4><p><code>zsh-syntax-highlighting</code> 是一个命令语法高亮插件，合法的命令会显示为绿色，非法命令则显示为红色。</p>
+<p>安装方式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-syntax-highlighting</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-3-z"><a href="#3-1-3-z" class="headerlink" title="3.1.3 z"></a>3.1.3 z</h4><p>Oh My Zsh 内置 <code>z</code> 插件，它可以记住你访问过的目录，并根据模式快速跳转到目标目录。</p>
+<h4 id="3-1-4-extract"><a href="#3-1-4-extract" class="headerlink" title="3.1.4 extract"></a>3.1.4 extract</h4><p>Oh My Zsh 内置 <code>extract</code> 插件，使用 <code>x</code> 命令即可解压任何压缩文件，无需记忆具体的解压命令。</p>
+<h3 id="3-2-启用插件"><a href="#3-2-启用插件" class="headerlink" title="3.2 启用插件"></a>3.2 启用插件</h3><p>修改 <code>~/.zshrc</code> 文件，启用所需插件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plugins=(</span><br><span class="line">  git zsh-autosuggestions zsh-syntax-highlighting z extract web-search</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>然后重新加载配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.zshrc</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-实用技巧"><a href="#4-实用技巧" class="headerlink" title="4. 实用技巧"></a>4. 实用技巧</h2><h3 id="4-1-root-用户配置"><a href="#4-1-root-用户配置" class="headerlink" title="4.1 root 用户配置"></a>4.1 root 用户配置</h3><p>如果你在 <code>sudo su</code> 切换到 root 用户时发现终端仍然是默认的 Bash，建议为 root 用户也安装 Oh My Zsh。通过设置不同的主题来区分普通用户与 root 用户。</p>
+<p>以下是 root 用户的 <code>~/.zshrc</code> 配置示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ZSH_THEME=<span class="string">&quot;ys&quot;</span></span><br><span class="line">plugins=(</span><br><span class="line">  git zsh-autosuggestions zsh-syntax-highlighting z extract web-search</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>或：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ZSH_THEME=<span class="string">&quot;ys&quot;</span></span><br><span class="line">plugins=(</span><br><span class="line">  git colored-man-pages colorize <span class="built_in">cp</span> man command-not-found sudo suse ubuntu archlinux zsh-navigation-tools z extract history-substring-search python zsh-autosuggestions zsh-syntax-highlighting</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-本地代理配置"><a href="#4-2-本地代理配置" class="headerlink" title="4.2 本地代理配置"></a>4.2 本地代理配置</h3><p>如果你有本地代理，并希望终端中的 Git 等命令使用代理，可以在 <code>~/.zshrc</code> 中添加以下函数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置代理</span></span><br><span class="line"><span class="function"><span class="title">proxy</span></span>() &#123;</span><br><span class="line">  <span class="built_in">export</span> ALL_PROXY=socks5://127.0.0.1:1089</span><br><span class="line">  <span class="built_in">export</span> all_proxy=socks5://127.0.0.1:1089</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 取消代理</span></span><br><span class="line"><span class="function"><span class="title">unproxy</span></span>() &#123;</span><br><span class="line">  <span class="built_in">unset</span> ALL_PROXY</span><br><span class="line">  <span class="built_in">unset</span> all_proxy</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-3-卸载-Oh-My-Zsh"><a href="#4-3-卸载-Oh-My-Zsh" class="headerlink" title="4.3 卸载 Oh My Zsh"></a>4.3 卸载 Oh My Zsh</h3><p>要卸载 Oh My Zsh，输入以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uninstall_oh_my_zsh</span><br></pre></td></tr></table></figure>
+
+<p>系统会提示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Are you sure you want to remove Oh My Zsh [y/N]</span><br></pre></td></tr></table></figure>
+
+<p>输入 <code>Y</code> 后，终端会显示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Removing ~/.oh-my-zsh</span><br><span class="line">Looking <span class="keyword">for</span> original zsh config...</span><br><span class="line">Found ~/.zshrc.pre-oh-my-zsh -- Restoring to ~/.zshrc</span><br><span class="line">Found ~/.zshrc -- Renaming to ~/.zshrc.omz-uninstalled-XXXXXX</span><br><span class="line">Your original zsh config was restored. Please restart your session.</span><br><span class="line">Thanks <span class="keyword">for</span> trying out Oh My Zsh. It<span class="string">&#x27;s been uninstalled.</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-手动更新-Oh-My-Zsh"><a href="#4-4-手动更新-Oh-My-Zsh" class="headerlink" title="4.4 手动更新 Oh My Zsh"></a>4.4 手动更新 Oh My Zsh</h3><p>如果你误关闭了 Oh My Zsh 的自动更新提示，可以通过以下命令手动更新：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">upgrade_oh_my_zsh</span><br></pre></td></tr></table></figure></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yozuru.cn">Yozuru</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yozuru.cn/post/c912cbca.html">https://yozuru.cn/post/c912cbca.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yozuru.cn" target="_blank">Yozuru's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Oh-My-Zsh/">Oh My Zsh</a><a class="post-meta__tags" href="/tags/Shell/">Shell</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Oh-My-Zsh"><span class="toc-number">1.</span> <span class="toc-text">Oh-My-Zsh</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">1. 环境配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%AE%89%E8%A3%85%E5%9F%BA%E7%A1%80%E5%B7%A5%E5%85%B7"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 安装基础工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%AE%89%E8%A3%85-Oh-My-Zsh"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2 安装 Oh My Zsh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E8%BF%81%E7%A7%BB-bashrc-%E9%85%8D%E7%BD%AE%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="toc-number">1.1.3.</span> <span class="toc-text">1.3 迁移 .bashrc 配置（可选）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E9%85%8D%E7%BD%AE%E4%B8%BB%E9%A2%98"><span class="toc-number">1.2.</span> <span class="toc-text">2. 配置主题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 自定义主题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%8E%A8%E8%8D%90%E4%B8%BB%E9%A2%98"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 推荐主题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-powerlevel10k"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">2.2.1 powerlevel10k</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="toc-number">1.3.</span> <span class="toc-text">3. 安装插件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E6%8E%A8%E8%8D%90%E6%8F%92%E4%BB%B6"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 推荐插件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-1-zsh-autosuggestions"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">3.1.1 zsh-autosuggestions</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-zsh-syntax-highlighting"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">3.1.2 zsh-syntax-highlighting</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-3-z"><span class="toc-number">1.3.1.3.</span> <span class="toc-text">3.1.3 z</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-4-extract"><span class="toc-number">1.3.1.4.</span> <span class="toc-text">3.1.4 extract</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%90%AF%E7%94%A8%E6%8F%92%E4%BB%B6"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 启用插件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7"><span class="toc-number">1.4.</span> <span class="toc-text">4. 实用技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-root-%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 root 用户配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%9C%AC%E5%9C%B0%E4%BB%A3%E7%90%86%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 本地代理配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%8D%B8%E8%BD%BD-Oh-My-Zsh"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 卸载 Oh My Zsh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E6%89%8B%E5%8A%A8%E6%9B%B4%E6%96%B0-Oh-My-Zsh"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.4 手动更新 Oh My Zsh</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/default_top.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Yozuru</div><div class="footer_custom_text">Hi, welcome to my blog.</br><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">豫ICP备2023018923号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.textContent = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '1gRcPIUcCbZVQE6BdQZFSn80-gzGzoHsz',
+      appKey: 'urPscmzTqJuEnp3LDCdod6pz',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>

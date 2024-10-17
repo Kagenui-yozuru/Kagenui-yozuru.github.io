@@ -1,0 +1,405 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？ | Yozuru's Blog</title><meta name="author" content="Yozuru"><meta name="copyright" content="Yozuru"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="OpenApi VS Swagger1、 OpenApiOpenAPI，全称为“OpenAPI Specification”，是一个用于描述和定义RESTful API的 开放标准 。前身就是Swagger规范。它以可读性强且易于理解的方式，提供了API的详细信息，包括端点、参数、请求和响应格式等。OpenAPI旨在促进API的开发、维护和使用过程中的标准化和自动化。OpenAPI规范使用JSON">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？">
+<meta property="og:url" content="https://yozuru.cn/post/62ea1481.html">
+<meta property="og:site_name" content="Yozuru&#39;s Blog">
+<meta property="og:description" content="OpenApi VS Swagger1、 OpenApiOpenAPI，全称为“OpenAPI Specification”，是一个用于描述和定义RESTful API的 开放标准 。前身就是Swagger规范。它以可读性强且易于理解的方式，提供了API的详细信息，包括端点、参数、请求和响应格式等。OpenAPI旨在促进API的开发、维护和使用过程中的标准化和自动化。OpenAPI规范使用JSON">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yozuru.cn/img/avatar.jpg">
+<meta property="article:published_time" content="2023-08-14T08:37:26.000Z">
+<meta property="article:modified_time" content="2024-10-17T08:07:00.297Z">
+<meta property="article:author" content="Yozuru">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring Boot">
+<meta property="article:tag" content="OpenAPI">
+<meta property="article:tag" content="Swagger">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yozuru.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yozuru.cn/post/62ea1481.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"HY3533WS6D","apiKey":"a2319d076c1243f0f625c769dfc80ecd","indexName":"blog_search","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-17 16:07:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Yozuru's Blog"><img class="site-icon" src="/img/favicon.png"/><span class="site-name">Yozuru's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-14T08:37:26.000Z" title="发表于 2023-08-14 16:37:26">2023-08-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-17T08:07:00.297Z" title="更新于 2024-10-17 16:07:00">2024-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/">编程日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/">技术方案</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title="Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/62ea1481.html#post-comment"><span id="twikoo-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="OpenApi-VS-Swagger"><a href="#OpenApi-VS-Swagger" class="headerlink" title="OpenApi VS Swagger"></a>OpenApi VS Swagger</h1><h3 id="1、-OpenApi"><a href="#1、-OpenApi" class="headerlink" title="1、 OpenApi"></a>1、 OpenApi</h3><p><a target="_blank" rel="noopener" href="https://spec.openapis.org/">OpenAPI</a>，全称为“OpenAPI Specification”，是一个用于描述和定义RESTful API的 <strong><u>开放标准</u></strong> 。前身就是<strong>Swagger</strong>规范。它以可读性强且易于理解的方式，提供了API的详细信息，包括端点、参数、请求和响应格式等。OpenAPI旨在促进API的开发、维护和使用过程中的标准化和自动化。OpenAPI规范使用JSON或YAML格式编写，使开发人员和API消费者能够更好地理解和使用API。</p>
+<p>OpenAPI是 <strong><u>与编程语言和实现无关</u></strong> 的。它的主要目标是定义和描述RESTful API的结构、端点、请求和响应格式等内容，而不关注具体的编程语言、框架或技术细节。</p>
+<p>OpenApi是业界<strong>真正的</strong> API 文档标准，它因为被Linux列为API标准，从而成为行业标准。</p>
+<h3 id="2、Swagger"><a href="#2、Swagger" class="headerlink" title="2、Swagger"></a>2、Swagger</h3><p>Swagger 是一个 API 文档维护组织，后来成为了 Open API 标准的主要定义者。于此同时，它也同样是一种规范（是OpenApi的前身），也是一个工具集，这两者相辅相成。它在制定了规范的同时，也提供了一套开发的工具。</p>
+<p>现在最新的版本为17年发布的 Swagger3（Open Api3）。但是现在绝大部分项目还在用过时的 Swagger2（17年停止维护并更名为swagger3）。</p>
+<h3 id="3、二者关系"><a href="#3、二者关系" class="headerlink" title="3、二者关系"></a>3、二者关系</h3><p>现在，Swagger 代指 OpenApi 2.0，是一个协议+工具的结合体。OpenApi 3.0后，以单纯的规范的形式出现，剥离具体的实现。也有人用Swagger 3.0来表示 OpenApi 3.0。</p>
+<table>
+<thead>
+<tr>
+<th align="center">Specification</th>
+<th align="center">1.0</th>
+<th align="center">2.0</th>
+<th align="center">3.0</th>
+<th align="center">Governance</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Swagger</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center"></td>
+<td align="center">SmartBear</td>
+</tr>
+<tr>
+<td align="center">OpenAPI</td>
+<td align="center"></td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">OAI</td>
+</tr>
+</tbody></table>
+<h1 id="SpringFox-VS-SpringDoc"><a href="#SpringFox-VS-SpringDoc" class="headerlink" title="SpringFox VS SpringDoc"></a>SpringFox VS SpringDoc</h1><h3 id="1、SpringFox"><a href="#1、SpringFox" class="headerlink" title="1、SpringFox"></a>1、SpringFox</h3><p>SpringFox 是 Spring 社区维护的一个项目（非官方），帮助使用者将 <strong>Swagger2</strong> 集成到 Spring 中。常常用于 Spring 中帮助开发者生成文档，并可以轻松的在Spring Boot中使用。截至2020年4月，都未支持 OpenAPI3 标准。国内绝大多数项目中使用的都是SpringFox的2.x版本。对应的Maven依赖是：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>直到 2020.7.14 SpringFox 发布了 3.0 版本，增加了对 OpenAPI3 的支持。同时也增加了对Spring 5，Webflux（仅请求映射支持，尚不支持功能端点）的支持。这是唯一同时兼容 OpenAPI2 和 OpenAPI3 两种规范的版本。</p>
+<p>但它只是<strong>昙花一现</strong>，之后就再也没有过更新。对应的Maven依赖是：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--同时更新了SpringBoot的Starter--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2、SpringDoc"><a href="#2、SpringDoc" class="headerlink" title="2、SpringDoc"></a>2、SpringDoc</h3><p>SpringDoc也是 spring 社区维护的一个项目（非官方），帮助使用者将 <strong>OpenAPI3</strong> 集成到 Spring 中。相较 SpringFox来说，它的活跃度更高，更新速度频繁。它仅支持 <strong>OpenAPI3</strong> 规范 ，但 <strong>OpenAPI3</strong>  并未对 <strong>Swagger2</strong> 的注解做兼容，不易迁移。可能这也是在国内知名度低于SpringFox的原因之一。</p>
+<p>除了不支持<strong>Swagger2</strong>以外（本身也是历史遗留物了），它的兼容性是当前所有方案中最好的。它对SpringBoot3、Spring WebFlux甚至Spring Rest和Spring Native项目都有支持，是新开发项目的首选方案。它对应的Maven依赖是：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springdoc<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springdoc-openapi-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3、两者关系"><a href="#3、两者关系" class="headerlink" title="3、两者关系"></a>3、两者关系</h3><p>SpringFox 是Swagger2 时代的产物，仅有一个3.0版本提供对 OpenAPI3.0 的支持，之后就再也没有更新。随着SpringBoot版本的提升，在之后也会遇到越来越多的兼容性问题，在新项目中使用SpringFox 绝不是一个好的选择。</p>
+<p>SpringDoc生来就是为了实现OpenAPI3.0规范，并且目前保持着更新。顺应改变，尝试使用SpringDoc吧。</p>
+<h1 id="由SpringFox迁移至SpringDoc"><a href="#由SpringFox迁移至SpringDoc" class="headerlink" title="由SpringFox迁移至SpringDoc"></a>由SpringFox迁移至SpringDoc</h1><h3 id="1、依赖替换"><a href="#1、依赖替换" class="headerlink" title="1、依赖替换"></a>1、依赖替换</h3><ul>
+<li><p>SpringFox</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.springfox<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springfox-swagger2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.9.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>SpringDoc</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springdoc<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springdoc-openapi-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="2、注解替换"><a href="#2、注解替换" class="headerlink" title="2、注解替换"></a>2、注解替换</h3><table>
+<thead>
+<tr>
+<th align="center">SpringFox</th>
+<th align="center">SpringDoc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">@Api</td>
+<td align="center">@Tag</td>
+</tr>
+<tr>
+<td align="center">@ApiIgnore</td>
+<td align="center">@Parameter(hidden &#x3D; true) or @Hidden</td>
+</tr>
+<tr>
+<td align="center">@ApiModel</td>
+<td align="center">@Schema</td>
+</tr>
+<tr>
+<td align="center">@ApiModelProperty</td>
+<td align="center">@Schema</td>
+</tr>
+<tr>
+<td align="center">@ApiOperation(value &#x3D; “foo”,notes &#x3D; “bar”)</td>
+<td align="center">@Operation(summary &#x3D; “foo”,description &#x3D; “bar”)</td>
+</tr>
+<tr>
+<td align="center">@ApiParam</td>
+<td align="center">@Parameter</td>
+</tr>
+<tr>
+<td align="center">@ApiImplicitParam</td>
+<td align="center">@Parameter</td>
+</tr>
+<tr>
+<td align="center">@ApiImplicitParams</td>
+<td align="center">@Parameters</td>
+</tr>
+</tbody></table>
+<h3 id="3、配置类替换"><a href="#3、配置类替换" class="headerlink" title="3、配置类替换"></a>3、配置类替换</h3><p>由<strong>Docket</strong>替换为<strong>OpenAPI</strong>或者<strong>GroupedOpenAPI</strong></p>
+<ul>
+<li><p>SpringFox</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> Docket <span class="title function_">api</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Docket</span>(DocumentationType.OAS_30)</span><br><span class="line">        .apiInfo(apiInfo())</span><br><span class="line">        .enable(enableSwagger)</span><br><span class="line">        .select()</span><br><span class="line">        .apis(RequestHandlerSelectors.basePackage(<span class="string">&quot;cn.edu.huel.controller&quot;</span>))</span><br><span class="line">        .build()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>OpenAPI</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> OpenAPI <span class="title function_">api</span><span class="params">()</span> &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">OpenAPI</span>()</span><br><span class="line">    .paths(<span class="string">&quot;&quot;</span>)</span><br><span class="line">    .info(info())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>GroupedOpenAPI</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> GroupedOpenApi <span class="title function_">publicApi</span><span class="params">()</span> &#123;</span><br><span class="line"><span class="keyword">return</span> GroupedOpenApi.builder()</span><br><span class="line">	.setGroup(<span class="string">&quot;spring-public&quot;</span>)</span><br><span class="line">	.packagesToScan(<span class="string">&quot;com.example.controller&quot;</span>)</span><br><span class="line">	.build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>这样就可以实现从SpringFox到SpringDoc的迁移。</p>
+<h1 id="替换默认UI——Knife4j"><a href="#替换默认UI——Knife4j" class="headerlink" title="替换默认UI——Knife4j"></a>替换默认UI——Knife4j</h1><h3 id="1、swagger-bootstrap-ui"><a href="#1、swagger-bootstrap-ui" class="headerlink" title="1、swagger-bootstrap-ui"></a>1、swagger-bootstrap-ui</h3><p>无论是SpringFox还是SpringDoc，使用的都是同一套UI。这套UI怎么说呢，挺好看的。</p>
+<p>但是有点过于简约了，对Model的展示也是文本形式的，使用起来有那么一点麻烦的。</p>
+<p><img src="https://yozuru-markdown.oss-cn-qingdao.aliyuncs.com/image-20230815210201322.png" alt="image-20230815210201322"></p>
+<p>这种Model展示形式可读性有些低。</p>
+<p><img src="https://yozuru-markdown.oss-cn-qingdao.aliyuncs.com/image-20230815210452028.png" alt="image-20230815210452028"></p>
+<h3 id="2、Knife4j"><a href="#2、Knife4j" class="headerlink" title="2、Knife4j"></a>2、Knife4j</h3><p>Knife4j是Swagger的增强版，无论是SpringFox还是SpringDoc它都有提供增强。也提供了对应的增强依赖，在这里我们只引入UI即可。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.xiaoymin<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>knife4j-openapi3-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>或者直接使用它提供的Starter</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.xiaoymin<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>knife4j-openapi3-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.3.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>默认情况下我们不需要再进行额外配置，在项目的<code>/doc.html</code>就已经有对应的接口文档UI了。</p>
+<p><img src="https://yozuru-markdown.oss-cn-qingdao.aliyuncs.com/image-20230815211309128.png" alt="image-20230815211309128"></p>
+<p>可以看到这个布局以及对Model的展示清晰了很多。</p>
+<ul>
+<li><p>可选操作：排除掉swagger-bootstrap-ui</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.xiaoymin<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>knife4j-openapi3-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.webjars<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>swagger-ui<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.3.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yozuru.cn">Yozuru</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yozuru.cn/post/62ea1481.html">https://yozuru.cn/post/62ea1481.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yozuru.cn" target="_blank">Yozuru's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a><a class="post-meta__tags" href="/tags/Spring-Boot/">Spring Boot</a><a class="post-meta__tags" href="/tags/OpenAPI/">OpenAPI</a><a class="post-meta__tags" href="/tags/Swagger/">Swagger</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/8cd3e59c.html" title="SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-01</div><div class="title">SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池</div></div></a></div><div><a href="/post/13fbffb3.html" title="SpringMVC中Jackson反序列化将空字符串转为null"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-25</div><div class="title">SpringMVC中Jackson反序列化将空字符串转为null</div></div></a></div><div><a href="/post/b858d434.html" title="使用MybatisPlus提供的JsonTypeHandler映射实体类对象"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-06</div><div class="title">使用MybatisPlus提供的JsonTypeHandler映射实体类对象</div></div></a></div><div><a href="/post/c9054be7.html" title="在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-17</div><div class="title">在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段</div></div></a></div><div><a href="/post/6f1d7a0f.html" title="如何优雅地把SpringBoot项目部署到服务端Docker"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">如何优雅地把SpringBoot项目部署到服务端Docker</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#OpenApi-VS-Swagger"><span class="toc-number">1.</span> <span class="toc-text">OpenApi VS Swagger</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81-OpenApi"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、 OpenApi</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81Swagger"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、Swagger</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E4%BA%8C%E8%80%85%E5%85%B3%E7%B3%BB"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、二者关系</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SpringFox-VS-SpringDoc"><span class="toc-number">2.</span> <span class="toc-text">SpringFox VS SpringDoc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81SpringFox"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、SpringFox</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81SpringDoc"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、SpringDoc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E4%B8%A4%E8%80%85%E5%85%B3%E7%B3%BB"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、两者关系</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%B1SpringFox%E8%BF%81%E7%A7%BB%E8%87%B3SpringDoc"><span class="toc-number">3.</span> <span class="toc-text">由SpringFox迁移至SpringDoc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%BE%9D%E8%B5%96%E6%9B%BF%E6%8D%A2"><span class="toc-number">3.0.1.</span> <span class="toc-text">1、依赖替换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E6%B3%A8%E8%A7%A3%E6%9B%BF%E6%8D%A2"><span class="toc-number">3.0.2.</span> <span class="toc-text">2、注解替换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E9%85%8D%E7%BD%AE%E7%B1%BB%E6%9B%BF%E6%8D%A2"><span class="toc-number">3.0.3.</span> <span class="toc-text">3、配置类替换</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9B%BF%E6%8D%A2%E9%BB%98%E8%AE%A4UI%E2%80%94%E2%80%94Knife4j"><span class="toc-number">4.</span> <span class="toc-text">替换默认UI——Knife4j</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81swagger-bootstrap-ui"><span class="toc-number">4.0.1.</span> <span class="toc-text">1、swagger-bootstrap-ui</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81Knife4j"><span class="toc-number">4.0.2.</span> <span class="toc-text">2、Knife4j</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/default_top.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Yozuru</div><div class="footer_custom_text">Hi, welcome to my blog.</br><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">豫ICP备2023018923号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.textContent = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '1gRcPIUcCbZVQE6BdQZFSn80-gzGzoHsz',
+      appKey: 'urPscmzTqJuEnp3LDCdod6pz',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>

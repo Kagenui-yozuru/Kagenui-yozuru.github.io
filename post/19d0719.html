@@ -1,0 +1,326 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Kotlin Data Class 与 MyBatis 兼容性问题的解决 | Yozuru's Blog</title><meta name="author" content="Yozuru"><meta name="copyright" content="Yozuru"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="最近在项目中使用 Kotlin 的 data class 与 MyBatis 进行数据库映射时，遇到了一个令人费解的异常。经过一番折腾，终于找到了问题的根源，并解决了这个问题。在这里记录一下整个排查和解决的过程。 问题描述在运行项目时，出现了以下异常： 12org.springframework.dao.DataIntegrityViolationException: Error attempti">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin Data Class 与 MyBatis 兼容性问题的解决">
+<meta property="og:url" content="https://yozuru.cn/post/19d0719.html">
+<meta property="og:site_name" content="Yozuru&#39;s Blog">
+<meta property="og:description" content="最近在项目中使用 Kotlin 的 data class 与 MyBatis 进行数据库映射时，遇到了一个令人费解的异常。经过一番折腾，终于找到了问题的根源，并解决了这个问题。在这里记录一下整个排查和解决的过程。 问题描述在运行项目时，出现了以下异常： 12org.springframework.dao.DataIntegrityViolationException: Error attempti">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yozuru.cn/img/avatar.jpg">
+<meta property="article:published_time" content="2023-10-15T09:23:38.000Z">
+<meta property="article:modified_time" content="2024-10-17T08:27:44.837Z">
+<meta property="article:author" content="Yozuru">
+<meta property="article:tag" content="Kotlin">
+<meta property="article:tag" content="Mybatis">
+<meta property="article:tag" content="Debug">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yozuru.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yozuru.cn/post/19d0719.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"HY3533WS6D","apiKey":"a2319d076c1243f0f625c769dfc80ecd","indexName":"blog_search","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Kotlin Data Class 与 MyBatis 兼容性问题的解决',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-17 16:27:44'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Yozuru's Blog"><img class="site-icon" src="/img/favicon.png"/><span class="site-name">Yozuru's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Kotlin Data Class 与 MyBatis 兼容性问题的解决</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-10-15T09:23:38.000Z" title="发表于 2023-10-15 17:23:38">2023-10-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-17T08:27:44.837Z" title="更新于 2024-10-17 16:27:44">2024-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">问题记录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title="Kotlin Data Class 与 MyBatis 兼容性问题的解决"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/19d0719.html#post-comment"><span id="twikoo-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>最近在项目中使用 Kotlin 的 <code>data class</code> 与 MyBatis 进行数据库映射时，遇到了一个令人费解的异常。经过一番折腾，终于找到了问题的根源，并解决了这个问题。在这里记录一下整个排查和解决的过程。</p>
+<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>在运行项目时，出现了以下异常：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.dao.DataIntegrityViolationException: Error attempting to get column &#x27;name&#x27; from result set.  Cause: org.postgresql.util.PSQLException: 不良的类型值 int : 测试工程1</span><br><span class="line">; 不良的类型值 int : 测试工程1; nested exception is org.postgresql.util.PSQLException: 不良的类型值 int : 测试工程1</span><br></pre></td></tr></table></figure>
+
+<p>从错误信息来看，在尝试从结果集中获取 <code>name</code> 列时出现了问题。数据库返回的 <code>name</code> 值是字符串 “测试工程1”，但程序却提示存在类型 <code>int</code> 的错误。这明显不合理，<code>name</code> 字段在数据库中明明是 <code>varchar</code> 类型，为什么会出现这种错误呢？</p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>首先，我检查了数据库中相关表的结构，确认 <code>name</code> 字段的类型确实是 <code>varchar</code>：</p>
+<h3 id="pro-project-表结构"><a href="#pro-project-表结构" class="headerlink" title="pro_project 表结构"></a><code>pro_project</code> 表结构</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> pro_project</span><br><span class="line">(</span><br><span class="line">    id            serial</span><br><span class="line">        <span class="keyword">primary</span> key,</span><br><span class="line">    name          <span class="type">varchar</span>                 <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    voltage_level <span class="type">varchar</span>                 <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    create_time   <span class="type">timestamp</span> <span class="keyword">default</span> now() <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    manager       <span class="type">integer</span>   <span class="keyword">default</span> <span class="number">1</span>     <span class="keyword">not</span> <span class="keyword">null</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>接着，查看了 <code>pro_attendance</code> 表的结构：</p>
+<h3 id="pro-attendance-表结构"><a href="#pro-attendance-表结构" class="headerlink" title="pro_attendance 表结构"></a><code>pro_attendance</code> 表结构</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> pro_attendance</span><br><span class="line">(</span><br><span class="line">    id                  <span class="type">integer</span> </span><br><span class="line">    project_id          <span class="type">integer</span>                                                            <span class="keyword">not</span> <span class="keyword">null</span></span><br><span class="line">    user_id             <span class="type">integer</span>                                                            <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    sign_in_time        <span class="type">timestamp</span>                                                          <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    sign_out_time       <span class="type">timestamp</span>,</span><br><span class="line">    sign_in_coordinate  geometry(PointZ, <span class="number">4326</span>)                                             <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">    sign_out_coordinate geometry(PointZ, <span class="number">4326</span>),</span><br><span class="line">    working_hours       <span class="type">integer</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>然后，查看了 MyBatis 的 <code>ResultMap</code> 和 SQL 查询语句，确认字段的映射关系是正确的。</p>
+<h3 id="ResultMap-配置"><a href="#ResultMap-配置" class="headerlink" title="ResultMap 配置"></a>ResultMap 配置</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;AttendanceVOMap&quot;</span> <span class="attr">type</span>=<span class="string">&quot;com.heny.server.controller.project.response.AttendanceVO&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;user_id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;userId&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;project_id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;projectId&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;projectName&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;sign_in_time&quot;</span> <span class="attr">property</span>=<span class="string">&quot;signInTime&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;sign_in_coordinate&quot;</span> <span class="attr">property</span>=<span class="string">&quot;signInCoordinate&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">typeHandler</span>=<span class="string">&quot;com.heny.web.handler.mybatis.PointTypeHandler&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;sign_out_time&quot;</span> <span class="attr">property</span>=<span class="string">&quot;signOutTime&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;sign_out_coordinate&quot;</span> <span class="attr">property</span>=<span class="string">&quot;signOutCoordinate&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">typeHandler</span>=<span class="string">&quot;com.heny.web.handler.mybatis.PointTypeHandler&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;working_hours&quot;</span> <span class="attr">property</span>=<span class="string">&quot;workingHours&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="SQL-查询语句"><a href="#SQL-查询语句" class="headerlink" title="SQL 查询语句"></a>SQL 查询语句</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectCurrentVOByUser&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;AttendanceVOMap&quot;</span>&gt;</span></span><br><span class="line">    SELECT a.id,</span><br><span class="line">           a.user_id,</span><br><span class="line">           a.project_id,</span><br><span class="line">           p.name,</span><br><span class="line">           a.sign_in_time,</span><br><span class="line">           a.sign_in_coordinate,</span><br><span class="line">           a.sign_out_time,</span><br><span class="line">           a.sign_out_coordinate,</span><br><span class="line">           a.working_hours</span><br><span class="line">    FROM pro_attendance a</span><br><span class="line">             LEFT JOIN pro_project p ON a.project_id = p.id</span><br><span class="line">    WHERE a.user_id = #&#123;userId&#125;</span><br><span class="line">      AND sign_out_time IS NULL LIMIT 1</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="VO-类定义"><a href="#VO-类定义" class="headerlink" title="VO 类定义"></a>VO 类定义</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="keyword">class</span> <span class="title class_">AttendanceVO</span>(</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;考勤记录ID&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> id: <span class="built_in">Int</span>,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;项目ID&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> projectId: <span class="built_in">Int</span>,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;项目名称&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> projectName: String,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;用户ID&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> userId: <span class="built_in">Int</span>,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;签到时间&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> signInTime: LocalDateTime,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;签到坐标&quot;</span>)</span><br><span class="line">    <span class="meta">@field:JsonSerialize</span>(using = GeometrySerializer::<span class="keyword">class</span>)</span><br><span class="line">    <span class="keyword">val</span> signInCoordinate: Point,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;签退时间&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> signOutTime: LocalDateTime?,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;签退坐标&quot;</span>)</span><br><span class="line">    <span class="meta">@field:JsonSerialize</span>(using = GeometrySerializer::<span class="keyword">class</span>)</span><br><span class="line">    <span class="keyword">val</span> signOutCoordinate: Point?,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;工作时长，秒&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> workingHours: <span class="built_in">Int</span>?,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>从以上代码可以看出，数据库字段类型、SQL 查询、ResultMap 配置、VO 类的属性类型都是对应的，看不出明显的问题。</p>
+<p>那么，问题到底出在哪里呢？</p>
+<h2 id="解决过程"><a href="#解决过程" class="headerlink" title="解决过程"></a>解决过程</h2><p>在仔细检查了所有的配置后，我开始怀疑问题可能出在 Kotlin 的 <code>data class</code> 与 MyBatis 的兼容性上。Kotlin 的 <code>data class</code> 默认是不会生成无参构造函数的，而 MyBatis 在映射结果集时，往往需要通过反射调用无参构造函数来实例化对象。</p>
+<p>经过搜索，发现很多人在使用 Kotlin 的 <code>data class</code> 配合 MyBatis 时，都遇到了类似的问题。这是因为 MyBatis 默认需要一个无参构造函数来创建映射对象，如果没有无参构造函数，就可能导致无法实例化对象，进而导致类型不匹配的异常。</p>
+<h3 id="方法一：手动添加无参构造函数"><a href="#方法一：手动添加无参构造函数" class="headerlink" title="方法一：手动添加无参构造函数"></a>方法一：手动添加无参构造函数</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="keyword">class</span> <span class="title class_">AttendanceVO</span>(</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;考勤记录ID&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> id: <span class="built_in">Int</span> = <span class="number">0</span>,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;项目ID&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> projectId: <span class="built_in">Int</span> = <span class="number">0</span>,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;项目名称&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> projectName: String = <span class="string">&quot;&quot;</span>,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;用户ID&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> userId: <span class="built_in">Int</span> = <span class="number">0</span>,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;签到时间&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> signInTime: LocalDateTime = LocalDateTime.now(),</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;签到坐标&quot;</span>)</span><br><span class="line">    <span class="meta">@field:JsonSerialize</span>(using = GeometrySerializer::<span class="keyword">class</span>)</span><br><span class="line">    <span class="keyword">val</span> signInCoordinate: Point = Point(<span class="number">0.0</span>, <span class="number">0.0</span>),</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;签退时间&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> signOutTime: LocalDateTime? = <span class="literal">null</span>,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;签退坐标&quot;</span>)</span><br><span class="line">    <span class="meta">@field:JsonSerialize</span>(using = GeometrySerializer::<span class="keyword">class</span>)</span><br><span class="line">    <span class="keyword">val</span> signOutCoordinate: Point? = <span class="literal">null</span>,</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;工作时长，秒&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> workingHours: <span class="built_in">Int</span>? = <span class="literal">null</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>通过为每个属性提供默认值，我们的 <code>data class</code> 就拥有了一个无参构造函数。但是我既然使用<code>Kotlin</code>了，为所有成员变量都指定一个默认值是否有点过于不优雅了呢？我是无法容忍在<code>data class</code>设置一些莫名其妙的初始值的。</p>
+<h3 id="方法二：使用-NoArg-注解和编译器插件"><a href="#方法二：使用-NoArg-注解和编译器插件" class="headerlink" title="方法二：使用 @NoArg 注解和编译器插件"></a>方法二：使用 <code>@NoArg</code> 注解和编译器插件</h3><p>经过查找，Jetbrains官方似乎也意识到了这个问题，提供了<code>kotlin-noarg</code> 插件。通过注解的方式为类生成空参构造函数。类似于<code>Lombok</code>中的<code>@NoArgsConstructor </code>。所以这个方法似乎比上面优雅一些，引入 Kotlin 的 <code>kotlin-noarg</code> 编译器插件的步骤如下。</p>
+<ol>
+<li><p><strong>添加自定义注解</strong></p>
+<p>定义一个只能用于类的 <code>@NoArg</code> 注解，当然这个注解的名称可以自定义</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@Retention(AnnotationRetention.SOURCE)</span><br><span class="line">@Target(AnnotationTarget.CLASS)</span><br><span class="line">annotation class NoArg</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>配置编译器插件</strong></p>
+<p>在项目的 <code>build.gradle</code> 中添加插件配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">plugins &#123;</span><br><span class="line">    id &#x27;org.jetbrains.kotlin.plugin.noarg&#x27; version &#x27;1.9.25&#x27; // 请使用当前 Kotlin 版本</span><br><span class="line">&#125;</span><br><span class="line">noArg &#123;</span><br><span class="line">    annotation(&#x27;com.yourpackage.NoArg&#x27;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>在 <code>data class</code> 上使用注解</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@NoArg</span><br><span class="line">data class AttendanceVO(</span><br><span class="line">    // 属性定义...</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>编译器插件会自动为被 <code>@NoArg</code> 注解的类生成无参构造函数。</p>
+<h3 id="再次运行"><a href="#再次运行" class="headerlink" title="再次运行"></a>再次运行</h3><p>在修改了 VO 类后，我再次运行项目，发现之前的异常不再出现，问题成功解决。</p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>这个问题的根源在于 MyBatis 依赖于 Java Bean 的规范，需要无参构造函数和 setter 方法。然而，Kotlin 的 <code>data class</code> 是不可变的，属性都是 <code>val</code>，而且默认不生成无参构造函数。这种设计上的差异，导致了两者之间的兼容性问题。</p>
+<p>MyBatis 作为一款经典的 ORM 框架，却没有很好地支持 Kotlin 的数据类，在面对现代语言的新特性时，显得有些滞后。这着实有些令人失望。</p>
+<p>作为一名开发者，我们需要在实际项目中权衡不同技术的特性和限制。在这个例子中，使用 kotlin-noarg 插件为 Kotlin 的 data class 生成无参构造函数，是一种优雅且实用的解决方案。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yozuru.cn">Yozuru</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yozuru.cn/post/19d0719.html">https://yozuru.cn/post/19d0719.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yozuru.cn" target="_blank">Yozuru's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Kotlin/">Kotlin</a><a class="post-meta__tags" href="/tags/Mybatis/">Mybatis</a><a class="post-meta__tags" href="/tags/Debug/">Debug</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/8cd3e59c.html" title="SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-01</div><div class="title">SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">问题描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">问题分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pro-project-%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.1.</span> <span class="toc-text">pro_project 表结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pro-attendance-%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.2.</span> <span class="toc-text">pro_attendance 表结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ResultMap-%E9%85%8D%E7%BD%AE"><span class="toc-number">2.3.</span> <span class="toc-text">ResultMap 配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL-%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5"><span class="toc-number">2.4.</span> <span class="toc-text">SQL 查询语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VO-%E7%B1%BB%E5%AE%9A%E4%B9%89"><span class="toc-number">2.5.</span> <span class="toc-text">VO 类定义</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E8%BF%87%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">解决过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A%E6%89%8B%E5%8A%A8%E6%B7%BB%E5%8A%A0%E6%97%A0%E5%8F%82%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">3.1.</span> <span class="toc-text">方法一：手动添加无参构造函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E4%BD%BF%E7%94%A8-NoArg-%E6%B3%A8%E8%A7%A3%E5%92%8C%E7%BC%96%E8%AF%91%E5%99%A8%E6%8F%92%E4%BB%B6"><span class="toc-number">3.2.</span> <span class="toc-text">方法二：使用 @NoArg 注解和编译器插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%8D%E6%AC%A1%E8%BF%90%E8%A1%8C"><span class="toc-number">3.3.</span> <span class="toc-text">再次运行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%80%83"><span class="toc-number">4.</span> <span class="toc-text">思考</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/default_top.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Yozuru</div><div class="footer_custom_text">Hi, welcome to my blog.</br><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">豫ICP备2023018923号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.textContent = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '1gRcPIUcCbZVQE6BdQZFSn80-gzGzoHsz',
+      appKey: 'urPscmzTqJuEnp3LDCdod6pz',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>

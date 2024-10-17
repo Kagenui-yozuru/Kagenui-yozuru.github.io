@@ -1,0 +1,322 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>使用MybatisPlus提供的JsonTypeHandler映射实体类对象 | Yozuru's Blog</title><meta name="author" content="Yozuru"><meta name="copyright" content="Yozuru"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前情提要在上一次的需求中，为了实现两个JSON字段的映射，我们自定义了一个AbstractJsonTypeHandler类，然后为每一个实体类定义了各自的TypeHandler。详情可以看上一篇关于TypeHandler的博客：在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段。那一个实现虽然能完成需求，但是实在不优雅。对于写代码有强迫症的我，自然需要优">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用MybatisPlus提供的JsonTypeHandler映射实体类对象">
+<meta property="og:url" content="https://yozuru.cn/post/b858d434.html">
+<meta property="og:site_name" content="Yozuru&#39;s Blog">
+<meta property="og:description" content="前情提要在上一次的需求中，为了实现两个JSON字段的映射，我们自定义了一个AbstractJsonTypeHandler类，然后为每一个实体类定义了各自的TypeHandler。详情可以看上一篇关于TypeHandler的博客：在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段。那一个实现虽然能完成需求，但是实在不优雅。对于写代码有强迫症的我，自然需要优">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yozuru.cn/img/avatar.jpg">
+<meta property="article:published_time" content="2023-08-06T06:37:12.000Z">
+<meta property="article:modified_time" content="2024-10-17T08:07:00.323Z">
+<meta property="article:author" content="Yozuru">
+<meta property="article:tag" content="Mybatis Plus">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Huel OJ">
+<meta property="article:tag" content="TypeHandler">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yozuru.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yozuru.cn/post/b858d434.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"HY3533WS6D","apiKey":"a2319d076c1243f0f625c769dfc80ecd","indexName":"blog_search","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '使用MybatisPlus提供的JsonTypeHandler映射实体类对象',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-17 16:07:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Yozuru's Blog"><img class="site-icon" src="/img/favicon.png"/><span class="site-name">Yozuru's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">使用MybatisPlus提供的JsonTypeHandler映射实体类对象</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-06T06:37:12.000Z" title="发表于 2023-08-06 14:37:12">2023-08-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-17T08:07:00.323Z" title="更新于 2024-10-17 16:07:00">2024-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/">编程日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/%E7%BC%96%E7%A8%8B%E8%AE%B0%E5%BD%95/">编程记录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title="使用MybatisPlus提供的JsonTypeHandler映射实体类对象"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/b858d434.html#post-comment"><span id="twikoo-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h1><p>在上一次的需求中，为了实现两个JSON字段的映射，我们自定义了一个AbstractJsonTypeHandler类，然后为每一个实体类定义了各自的TypeHandler。详情可以看上一篇关于TypeHandler的博客：<a href="/post/c9054be7.html" title="在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段">在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段</a>。那一个实现虽然能完成需求，但是实在不优雅。对于写代码有强迫症的我，自然需要优化一下方案。</p>
+<h1 id="FastjsonTypeHandler"><a href="#FastjsonTypeHandler" class="headerlink" title="FastjsonTypeHandler"></a>FastjsonTypeHandler</h1><h3 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h3><p><strong>FastjsonTypeHandler</strong>是MybatisPlus提供的默认Handler之一，它是继承了<code>AbstractJsonTypeHandler&lt;Object&gt;</code>。可以实现各种实体类到JSON字符串的映射。总体的设计思想跟我之前想的很类似，这依旧是使用了<strong>模板方法</strong>的设计模式。继承<code>AbstractJsonTypeHandler&lt;Object&gt;</code>的TypeHandler还有JacksonTypeHandler。</p>
+<h3 id="2、源码解析"><a href="#2、源码解析" class="headerlink" title="2、源码解析"></a>2、源码解析</h3><p>我们直接看源码，首先是<code>AbstractJsonTypeHandler</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AbstractJsonTypeHandler</span>&lt;T&gt; <span class="keyword">extends</span> <span class="title class_">BaseTypeHandler</span>&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setNonNullParameter</span><span class="params">(PreparedStatement ps, <span class="type">int</span> i, T parameter, JdbcType jdbcType)</span> <span class="keyword">throws</span> SQLException &#123;</span><br><span class="line">        ps.setString(i, toJson(parameter));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">getNullableResult</span><span class="params">(ResultSet rs, String columnName)</span> <span class="keyword">throws</span> SQLException &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> rs.getString(columnName);</span><br><span class="line">        <span class="keyword">return</span> StringUtils.isBlank(json) ? <span class="literal">null</span> : parse(json);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">getNullableResult</span><span class="params">(ResultSet rs, <span class="type">int</span> columnIndex)</span> <span class="keyword">throws</span> SQLException &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> rs.getString(columnIndex);</span><br><span class="line">        <span class="keyword">return</span> StringUtils.isBlank(json) ? <span class="literal">null</span> : parse(json);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> T <span class="title function_">getNullableResult</span><span class="params">(CallableStatement cs, <span class="type">int</span> columnIndex)</span> <span class="keyword">throws</span> SQLException &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> cs.getString(columnIndex);</span><br><span class="line">        <span class="keyword">return</span> StringUtils.isBlank(json) ? <span class="literal">null</span> : parse(json);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> T <span class="title function_">parse</span><span class="params">(String json)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title function_">toJson</span><span class="params">(T obj)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，它把通用逻辑给定义成了<strong>模板方法</strong>，留出了<code>parse</code>和<code>toJson</code>方法供子类实现。</p>
+<p>再查看<strong>FastjsonTypeHandler</strong>是如何实现的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@MappedTypes(&#123;Object.class&#125;)</span></span><br><span class="line"><span class="meta">@MappedJdbcTypes(&#123;JdbcType.VARCHAR&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FastjsonTypeHandler</span> <span class="keyword">extends</span> <span class="title class_">AbstractJsonTypeHandler</span>&lt;Object&gt; &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">log</span> <span class="operator">=</span> LoggerFactory.getLogger(FastjsonTypeHandler.class);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Class&lt;?&gt; type;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">FastjsonTypeHandler</span><span class="params">(Class&lt;?&gt; type)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (log.isTraceEnabled()) &#123;</span><br><span class="line">            log.trace(<span class="string">&quot;FastjsonTypeHandler(&quot;</span> + type + <span class="string">&quot;)&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Assert.notNull(type, <span class="string">&quot;Type argument cannot be null&quot;</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]);</span><br><span class="line">        <span class="built_in">this</span>.type = type;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> Object <span class="title function_">parse</span><span class="params">(String json)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> JSON.parseObject(json, <span class="built_in">this</span>.type);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> String <span class="title function_">toJson</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> JSON.toJSONString(obj, <span class="keyword">new</span> <span class="title class_">SerializerFeature</span>[]&#123;SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullListAsEmpty, SerializerFeature.WriteNullStringAsEmpty&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们需要关注的就是 <strong><code>type</code></strong> 变量，可以观察到它由 <strong><code>public FastjsonTypeHandler(Class&lt;?&gt; type)</code></strong> 这个构造方法传入。实例化TypeHandler的操作是在Mybatis内部进行的。以下是对应的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; TypeHandler&lt;T&gt; <span class="title function_">getInstance</span><span class="params">(Class&lt;?&gt; javaTypeClass, Class&lt;?&gt; typeHandlerClass)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (javaTypeClass != <span class="literal">null</span>) &#123;</span><br><span class="line">      Constructor&lt;?&gt; c = typeHandlerClass.getConstructor(Class.class);</span><br><span class="line">      <span class="keyword">return</span> (TypeHandler&lt;T&gt;) c.newInstance(javaTypeClass);</span><br><span class="line">  &#125;</span><br><span class="line">    Constructor&lt;?&gt; c = typeHandlerClass.getConstructor();</span><br><span class="line">    <span class="keyword">return</span> (TypeHandler&lt;T&gt;) c.newInstance();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，当<strong>javaTypeClass</strong>被指定时，会通过反射的方式获得参数列表为<strong>Class.class</strong>的构造方法，然后传入javaTypeClass进行实例化返回。若为空则调用无参构造方法。</p>
+<p>那么FastjsonTypeHandler是如何注册的呢？</p>
+<p>Mybatis那些自带的TypeHandler都是通过<code>register</code>方法注册的，<code>register</code>方法有大量的重载方法，可以供不同的入参完成注册。它们之间的调用关系可以用下图表示：</p>
+<p><img src="https://yozuru-markdown.oss-cn-qingdao.aliyuncs.com/image-20230806143941665.png" alt="image-20230806143941665"></p>
+<p>但是在MybatisPlus中，它是这样实例化并指定该字段的TypeHandler的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ResultMapping <span class="title function_">getResultMapping</span><span class="params">(<span class="keyword">final</span> Configuration configuration)</span> &#123;</span><br><span class="line">    ResultMapping.<span class="type">Builder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ResultMapping</span>.Builder(configuration, property,</span><br><span class="line">        StringUtils.getTargetColumn(column), propertyType);</span><br><span class="line">    <span class="type">TypeHandlerRegistry</span> <span class="variable">registry</span> <span class="operator">=</span> configuration.getTypeHandlerRegistry();</span><br><span class="line">    <span class="keyword">if</span> (jdbcType != <span class="literal">null</span> &amp;&amp; jdbcType != JdbcType.UNDEFINED) &#123;</span><br><span class="line">        builder.jdbcType(jdbcType);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (typeHandler != <span class="literal">null</span> &amp;&amp; typeHandler != UnknownTypeHandler.class) &#123;</span><br><span class="line">        TypeHandler&lt;?&gt; typeHandler = registry.getMappingTypeHandler(<span class="built_in">this</span>.typeHandler);</span><br><span class="line">        <span class="keyword">if</span> (typeHandler == <span class="literal">null</span>) &#123;</span><br><span class="line">            typeHandler = registry.getInstance(propertyType, <span class="built_in">this</span>.typeHandler);</span><br><span class="line">            <span class="comment">// todo 这会有影响 registry.register(typeHandler);</span></span><br><span class="line">        &#125;</span><br><span class="line">        builder.typeHandler(typeHandler);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> builder.build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的意思是：</p>
+<ul>
+<li><p><strong>第8行</strong> ：如果指定了这个变量的typeHandler类型，就进入处理逻辑</p>
+</li>
+<li><p><strong>第9行</strong>：尝试从已注册的typeHandler的map中获取这个typeHandler类型的实例</p>
+</li>
+<li><p><strong>第10~11行</strong>：如果这个类型的typeHandler还没被注册，就调用 <strong><code>registry.getInstance(propertyType, this.typeHandler)</code></strong> 。propertyType就是该字段的类型。之后指定实例化的FastjsonTypeHandler作为该字段的typeHandler。</p>
+</li>
+</ul>
+<p><strong>注意：MybatisPlus并不会帮我们注册TypeHandler，而只是实例化+指定。</strong></p>
+<h3 id="3、问题"><a href="#3、问题" class="headerlink" title="3、问题"></a>3、问题</h3><p>那么现在的问题就在于，这里的<code>propertyType</code>是否保留了泛型呢？很遗憾答案是否定的，这里的<code>propertyType</code>已经仅剩下了<strong>List</strong></p>
+<p><img src="https://yozuru-markdown.oss-cn-qingdao.aliyuncs.com/image-20230806231140557.png" alt="image-20230806231140557"></p>
+<p>这样的话它依旧是无法正确的处理集合类型。无奈只能继续使用数组了……。</p>
+<h1 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h1><h3 id="1、autoResultMap"><a href="#1、autoResultMap" class="headerlink" title="1、autoResultMap"></a>1、autoResultMap</h3><p>要使用FastjsonTypeHandler需要在表实体类上标注 <strong><code>@TableName(value = &quot;problem&quot;,autoResultMap = true)</code></strong> 。不然上述的 <strong><code>getResultMapping</code></strong> 方法就不会被调用，也就无法实例化、指定typehandler了。</p>
+<h3 id="2、typeHandler-FastjsonTypeHandler-class"><a href="#2、typeHandler-FastjsonTypeHandler-class" class="headerlink" title="2、typeHandler &#x3D; FastjsonTypeHandler.class"></a>2、typeHandler &#x3D; FastjsonTypeHandler.class</h3><p>在对应的字段上添加 <strong><code>@TableField(typeHandler = FastjsonTypeHandler.class)</code></strong> 指定TypeHandler的类型，这也是上述  <strong><code>getResultMapping</code></strong> 方法里 <strong><code>typeHandler = registry.getInstance(propertyType, this.typeHandler);</code></strong> 的<code>this.typeHandler</code>的入参。</p>
+<p>修改后的实体类为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@TableName(value = &quot;problem&quot;,autoResultMap = true)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Problem</span>  &#123;</span><br><span class="line">	</span><br><span class="line">    <span class="meta">@TableField(typeHandler = FastjsonTypeHandler.class)</span></span><br><span class="line">    <span class="keyword">private</span> Test[] test;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@TableField(typeHandler = FastjsonTypeHandler.class)</span></span><br><span class="line">    <span class="keyword">private</span> Solution[] solution;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我之前自定的TypeHandler和注册操作的Bean也可以删除了。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yozuru.cn">Yozuru</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yozuru.cn/post/b858d434.html">https://yozuru.cn/post/b858d434.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yozuru.cn" target="_blank">Yozuru's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Mybatis-Plus/">Mybatis Plus</a><a class="post-meta__tags" href="/tags/Java/">Java</a><a class="post-meta__tags" href="/tags/Huel-OJ/">Huel OJ</a><a class="post-meta__tags" href="/tags/TypeHandler/">TypeHandler</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/c9054be7.html" title="在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-17</div><div class="title">在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段</div></div></a></div><div><a href="/post/5aeac0ae.html" title="Mybatis Plus学习笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-10-15</div><div class="title">Mybatis Plus学习笔记</div></div></a></div><div><a href="/post/8cd3e59c.html" title="SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-01</div><div class="title">SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池</div></div></a></div><div><a href="/post/13fbffb3.html" title="SpringMVC中Jackson反序列化将空字符串转为null"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-25</div><div class="title">SpringMVC中Jackson反序列化将空字符串转为null</div></div></a></div><div><a href="/post/62ea1481.html" title="Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-14</div><div class="title">Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？</div></div></a></div><div><a href="/post/6f1d7a0f.html" title="如何优雅地把SpringBoot项目部署到服务端Docker"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">如何优雅地把SpringBoot项目部署到服务端Docker</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E6%83%85%E6%8F%90%E8%A6%81"><span class="toc-number">1.</span> <span class="toc-text">前情提要</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#FastjsonTypeHandler"><span class="toc-number">2.</span> <span class="toc-text">FastjsonTypeHandler</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E7%AE%80%E4%BB%8B"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、源码解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E9%97%AE%E9%A2%98"><span class="toc-number">2.0.3.</span> <span class="toc-text">3、问题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9"><span class="toc-number">3.</span> <span class="toc-text">修改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81autoResultMap"><span class="toc-number">3.0.1.</span> <span class="toc-text">1、autoResultMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81typeHandler-FastjsonTypeHandler-class"><span class="toc-number">3.0.2.</span> <span class="toc-text">2、typeHandler &#x3D; FastjsonTypeHandler.class</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/default_top.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Yozuru</div><div class="footer_custom_text">Hi, welcome to my blog.</br><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">豫ICP备2023018923号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.textContent = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '1gRcPIUcCbZVQE6BdQZFSn80-gzGzoHsz',
+      appKey: 'urPscmzTqJuEnp3LDCdod6pz',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>

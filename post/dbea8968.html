@@ -1,0 +1,373 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>基于Docker私有化部署TeamSpeak3服务端 | Yozuru's Blog</title><meta name="author" content="Yozuru"><meta name="copyright" content="Yozuru"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="TeamSpeak简介 TeamSpeak 是全球流行的团队语音通讯工具软件 常用于游戏、会议团队语音沟通，并提供文字聊天、文件共享功能，所有数据加密传输 拥有以下优势：  低延迟 毫秒级超低延迟，适用于对语音即时通讯有严格要求的团队游戏、远程会议等场合  高品质 支持多种语音编码格式，包括SPEEX、CELT、OPUS等多种格式；并可设置从1级到10级的语音质量  更保密 基于不对称加密方式（R">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Docker私有化部署TeamSpeak3服务端">
+<meta property="og:url" content="https://yozuru.cn/post/dbea8968.html">
+<meta property="og:site_name" content="Yozuru&#39;s Blog">
+<meta property="og:description" content="TeamSpeak简介 TeamSpeak 是全球流行的团队语音通讯工具软件 常用于游戏、会议团队语音沟通，并提供文字聊天、文件共享功能，所有数据加密传输 拥有以下优势：  低延迟 毫秒级超低延迟，适用于对语音即时通讯有严格要求的团队游戏、远程会议等场合  高品质 支持多种语音编码格式，包括SPEEX、CELT、OPUS等多种格式；并可设置从1级到10级的语音质量  更保密 基于不对称加密方式（R">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yozuru.cn/img/avatar.jpg">
+<meta property="article:published_time" content="2023-07-16T02:23:38.000Z">
+<meta property="article:modified_time" content="2024-10-17T08:07:00.339Z">
+<meta property="article:author" content="Yozuru">
+<meta property="article:tag" content="TeamSpeak3">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yozuru.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yozuru.cn/post/dbea8968.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"HY3533WS6D","apiKey":"a2319d076c1243f0f625c769dfc80ecd","indexName":"blog_search","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '基于Docker私有化部署TeamSpeak3服务端',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-17 16:07:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Yozuru's Blog"><img class="site-icon" src="/img/favicon.png"/><span class="site-name">Yozuru's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">基于Docker私有化部署TeamSpeak3服务端</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-07-16T02:23:38.000Z" title="发表于 2023-07-16 10:23:38">2023-07-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-17T08:07:00.339Z" title="更新于 2024-10-17 16:07:00">2024-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BD%AF%E4%BB%B6%E6%8E%A8%E8%8D%90/">软件推荐</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title="基于Docker私有化部署TeamSpeak3服务端"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/dbea8968.html#post-comment"><span id="twikoo-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="TeamSpeak简介"><a href="#TeamSpeak简介" class="headerlink" title="TeamSpeak简介"></a>TeamSpeak简介</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://teamspeak.com/zh-CN/"><strong>TeamSpeak</strong></a> 是全球流行的团队语音通讯工具软件</p>
+<p>常用于游戏、会议团队语音沟通，并提供文字聊天、文件共享功能，所有数据加密传输</p>
+<p>拥有以下优势：</p>
+<ul>
+<li><p>低延迟</p>
+<p>毫秒级超低延迟，适用于对语音即时通讯有严格要求的团队游戏、远程会议等场合</p>
+</li>
+<li><p>高品质</p>
+<p>支持多种语音编码格式，包括SPEEX、CELT、OPUS等多种格式；并可设置从1级到10级的语音质量</p>
+</li>
+<li><p>更保密</p>
+<p>基于不对称加密方式（RSA加密算法），对用户认证、语音传输进行加密，保护用户隐私</p>
+</li>
+<li><p>权限系统</p>
+<p>自己可以完全控制的用户权限系统，可分组及单独控制用户行为</p>
+</li>
+<li><p>无广告</p>
+<p>没有任何广告及垃圾邮件</p>
+</li>
+</ul>
+</blockquote>
+<p>总结下来就是一个轻量、高效、低延迟的语音通讯工具。但是由于没有官方服务器，所以需要使用者自行搭建服务端。因此，相比于其它主流语音工具，TeamSpeak有一点小小的门槛。本次则是基于官方的docker镜像，部署在私有服务器上。</p>
+<p>若是不想自行搭建服务端，国内也有第三方服务器提供商，可以即买即用。我了解到的是10人的服务器价格为10RMB&#x2F;月。</p>
+<blockquote>
+<p>想要使用TeamSpeak最主要的契机是，最近和朋友一起玩游戏时，为了方便我们一直都是使用微信语音。但是可能是网络原因，有时对话会有1~2秒的延迟，给人的感觉就像是在使用纸杯电话交流一样，说一句话之后要等待一会才会有回复。在玩需要即时配合的游戏时体验会很差。（经常是对方都死了好一会这边才听到惨叫）</p>
+<p>所以为了更好的游戏体验，就决定动动小手在自己的服务器上部署一个TeamSpeak。</p>
+<p>可惜搭建完之后玩游戏的时间越来越少了&#x3D; &#x3D;</p>
+</blockquote>
+<h1 id="服务端部署"><a href="#服务端部署" class="headerlink" title="服务端部署"></a>服务端部署</h1><h3 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h3><p>确认服务器已经安装 Docker 和 Docker-Compose</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker -v</span><br><span class="line">docker-compose -v</span><br></pre></td></tr></table></figure>
+
+<p>如能正常显示版本号，下面这一步<strong>直接跳过</strong>，否则要手动安装，这里以 <code>CentOS 7</code> 为例安装：</p>
+<blockquote>
+<p>若是其他系统，请自行搜索教程。步骤大差不差</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装yum-utils</span></span><br><span class="line">yum install -y yum-utils</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置yum源</span></span><br><span class="line">yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装docker-ce</span></span><br><span class="line">yum install -y docker-ce</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置开机启动服务</span></span><br><span class="line">systemctl <span class="built_in">enable</span> docker</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动服务</span></span><br><span class="line">systemctl start docker</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装epel源</span></span><br><span class="line">yum install -y epel-release</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装docker-compose，如果没有python3会安装python3</span></span><br><span class="line">yum install -y docker-compose</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="配置-TeamSpeak"><a href="#配置-TeamSpeak" class="headerlink" title="配置 TeamSpeak"></a>配置 TeamSpeak</h3><ol>
+<li>新建TeamSpeak的工作目录</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /root/ts  <span class="comment"># 创建目录</span></span><br><span class="line"><span class="built_in">cd</span> /root/ts     <span class="comment"># 切换当前目录</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>直接在root目录创建是个不好的习惯，图方便这样整的，不要学。可以建在根目录下</p>
+</blockquote>
+<ol start="2">
+<li>在当前目录下创建docker-compose.yml 文件，并编辑内容</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3.1&#x27;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">teamspeak:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">teamspeak:3.13.7</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">ts</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;9987:9987/udp&quot;</span> <span class="comment"># 语音服务</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;30033:30033&quot;</span>   <span class="comment"># 文件传输</span></span><br><span class="line"><span class="comment">#      - &quot;41144:41144&quot;   # DNS域名解析（可选）</span></span><br><span class="line"><span class="comment">#      - &quot;10011:10011&quot;   # 服务器查询 raw（可选）</span></span><br><span class="line">      <span class="comment"># - 10022:10022   # 服务器查询 SSH（可选）</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;10080:10080&quot;</span>   <span class="comment"># 网络请求 http（可选）</span></span><br><span class="line">      <span class="comment"># - 10443:10443   # 网络请求 https（可选）</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data:/var/ts3server</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">TS3SERVER_DB_PLUGIN:</span> <span class="string">ts3db_mariadb</span></span><br><span class="line">      <span class="attr">TS3SERVER_DB_SQLCREATEPATH:</span> <span class="string">create_mariadb</span></span><br><span class="line">      <span class="attr">TS3SERVER_DB_HOST:</span> <span class="string">db</span></span><br><span class="line">      <span class="attr">TS3SERVER_DB_USER:</span> <span class="string">root</span></span><br><span class="line">      <span class="attr">TS3SERVER_DB_PASSWORD:</span> <span class="string">YourPassword</span></span><br><span class="line">      <span class="attr">TS3SERVER_DB_NAME:</span> <span class="string">teamspeak</span></span><br><span class="line">      <span class="attr">TS3SERVER_DB_WAITUNTILREADY:</span> <span class="number">30</span></span><br><span class="line">      <span class="attr">TS3SERVER_LICENSE:</span> <span class="string">accept</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">team-speak-network</span></span><br><span class="line">  <span class="attr">db:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mariadb</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">ts-db</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;3308:3306&quot;</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">YourPassword</span></span><br><span class="line">      <span class="attr">MYSQL_DATABASE:</span> <span class="string">teamspeak</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./mysql:/var/lib/mysql</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">team-speak-network</span></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">    <span class="attr">team-speak-network:</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li><p><strong>镜像必须指定tag为3.13.7，若为空或者latest则无法使用</strong>（因为实际上3.13.7才是最新的，镜像制作者一直没有更新镜像tag）</p>
+<ul>
+<li>2023-08-11：实际上不是镜像制作者的问题，镜像tag是正确的。可能当时我没有正确的重启Docker容器导致的错觉。ISSUE:<a target="_blank" rel="noopener" href="https://github.com/TeamSpeak-Systems/teamspeak-linux-docker-images/issues/100#issuecomment-1674267542">Please update the ‘latest’ tag as it points to an old version. · Issue #100 · TeamSpeak-Systems&#x2F;teamspeak-linux-docker-images (github.com)</a></li>
+</ul>
+</li>
+<li><p>TeamSpeak的端口映射<strong>9987</strong>和<strong>10080</strong>是必须要打开的。其余几个可以根据需求选择</p>
+</li>
+<li><p>两个服务的<strong>volumes</strong>（数据卷）一定要配置，不然重启容器后数据会不可逆的丢失</p>
+</li>
+<li><p>TeamSpeak中环境变量里的TS3SERVER_DB_PASSWORD和TS3SERVER_DB_NAME一定要和db中对应</p>
+<ul>
+<li><code>TS3SERVER_DB_PLUGIN</code>和<code>TS3SERVER_DB_SQLCREATEPATH</code>指定了以 <a target="_blank" rel="noopener" href="https://mariadb.com/"><strong>MariaDB</strong></a> 作为数据库实现，这也是官方推荐的方案。可以更换为其它服务，官方还支持 <a target="_blank" rel="noopener" href="https://www.postgresql.org/"><strong>PostgreSQL</strong></a> ，但是我没配置成功，有兴趣的话可以自行研究一下。</li>
+</ul>
+</li>
+<li><p>服务器上要使用 <code>vi/vim/nano</code> 编辑文件，如果没有，CentOS 系统使用 <code>yum install nano</code> 类似的指令安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># [新建文件]</span></span><br><span class="line">vi docker-compose.yml</span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line">vim docker-compose.yml</span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line">nano docker-compose.yml</span><br><span class="line"></span><br><span class="line"><span class="comment"># [粘贴] ctrl+v 或 ctrl+shift+v 或 shift+insert</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># [保存] vi/vim: ESC :wq Enter</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># [保存] nano: ctrl+x</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h3><p>确认当前在 <code>docker-compose.yml</code> 所在的目录，如 <code>cd /data/ts</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动服务</span></span><br><span class="line">docker compose up</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动服务 后台运行 detach</span></span><br><span class="line">docker compose up -d</span><br><span class="line"></span><br><span class="line"><span class="comment"># 关闭服务</span></span><br><span class="line">docker compose down</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启服务</span></span><br><span class="line">docker compose restart</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看当前运行中容器</span></span><br><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+
+<h4 id="注意事项："><a href="#注意事项：" class="headerlink" title="注意事项："></a>注意事项：</h4><ul>
+<li>第一次启动时会弹出 <code>Server Query 管理员账号密码</code> 和 <code>token</code>，<strong>务必妥善保存</strong></li>
+<li>第一次如果用 <code>docker compose up -d</code> 启动没有看到token信息，可以到数据卷挂载的目录下<code>./data/logs</code> 查看相关日志</li>
+</ul>
+<h1 id="开放规则"><a href="#开放规则" class="headerlink" title="开放规则"></a>开放规则</h1><p>云服务器的防火墙设置页添加如下入站规则：</p>
+<ul>
+<li>9987 UDP</li>
+<li>30033 TCP</li>
+<li>10080 TCP</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://support.teamspeak.com/hc/en-us/articles/360002712257-Which-ports-does-the-TeamSpeak-3-server-use">TeamSpeak官方的端口说明</a></p>
+<h1 id="安装、汉化客户端"><a href="#安装、汉化客户端" class="headerlink" title="安装、汉化客户端"></a>安装、汉化客户端</h1><p>客户端下载地址：<a target="_blank" rel="noopener" href="https://teamspeak.com/zh-CN/downloads/">TeamSpeak 下载</a></p>
+<p>汉化包下载地址：<a target="_blank" rel="noopener" href="https://github.com/jitingcn/TS3-Translation_zh-CN/releases">TS3-Translation_zh-CN </a></p>
+<blockquote>
+<p>安装完客户端后运行汉化包中的文件，即可完成汉化。</p>
+</blockquote>
+<p>具体的客户端配置、使用可参考此视频<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1bM4y1o7e3/?spm_id_from=333.337.search-card.all.click&vd_source=3cba13e100da5db2a0a91b54ee4adee3">Teamspeak3完全使用手册（2023） 从安装汉化到服务器搭建！一个视频从零基础到上手</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yozuru.cn">Yozuru</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yozuru.cn/post/dbea8968.html">https://yozuru.cn/post/dbea8968.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yozuru.cn" target="_blank">Yozuru's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/TeamSpeak3/">TeamSpeak3</a><a class="post-meta__tags" href="/tags/Docker/">Docker</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/b622eccc.html" title="基于Hexo + Git + Nginx|GitHub Pages 一键部署、更新博客"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-31</div><div class="title">基于Hexo + Git + Nginx|GitHub Pages 一键部署、更新博客</div></div></a></div><div><a href="/post/6f1d7a0f.html" title="如何优雅地把SpringBoot项目部署到服务端Docker"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">如何优雅地把SpringBoot项目部署到服务端Docker</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#TeamSpeak%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">TeamSpeak简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%83%A8%E7%BD%B2"><span class="toc-number">2.</span> <span class="toc-text">服务端部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85docker"><span class="toc-number">2.0.1.</span> <span class="toc-text">安装docker</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-TeamSpeak"><span class="toc-number">2.0.2.</span> <span class="toc-text">配置 TeamSpeak</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">2.0.2.1.</span> <span class="toc-text">注意事项</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.0.3.</span> <span class="toc-text">启动服务</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%9A"><span class="toc-number">2.0.3.1.</span> <span class="toc-text">注意事项：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%80%E6%94%BE%E8%A7%84%E5%88%99"><span class="toc-number">3.</span> <span class="toc-text">开放规则</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E3%80%81%E6%B1%89%E5%8C%96%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">4.</span> <span class="toc-text">安装、汉化客户端</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/default_top.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Yozuru</div><div class="footer_custom_text">Hi, welcome to my blog.</br><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">豫ICP备2023018923号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.textContent = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '1gRcPIUcCbZVQE6BdQZFSn80-gzGzoHsz',
+      appKey: 'urPscmzTqJuEnp3LDCdod6pz',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>

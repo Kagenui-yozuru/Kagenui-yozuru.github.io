@@ -1,0 +1,471 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Mybatis Plus学习笔记 | Yozuru's Blog</title><meta name="author" content="Yozuru"><meta name="copyright" content="Yozuru"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="简介 MyBatis-Plus （简称 MP）是一个 MyBatis的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生。  特点 无侵入：只做增强不做改变，引入它不会对现有工程产生影响，如丝般顺滑  强大的 CRUD 操作：内置通用 Mapper、通用 Service，仅仅通过少量配置即可实现单表大部分 CRUD 操作，更有强大的条件构造器，满足各类使用需求  支持">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis Plus学习笔记">
+<meta property="og:url" content="https://yozuru.cn/post/5aeac0ae.html">
+<meta property="og:site_name" content="Yozuru&#39;s Blog">
+<meta property="og:description" content="简介 MyBatis-Plus （简称 MP）是一个 MyBatis的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生。  特点 无侵入：只做增强不做改变，引入它不会对现有工程产生影响，如丝般顺滑  强大的 CRUD 操作：内置通用 Mapper、通用 Service，仅仅通过少量配置即可实现单表大部分 CRUD 操作，更有强大的条件构造器，满足各类使用需求  支持">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yozuru.cn/img/avatar.jpg">
+<meta property="article:published_time" content="2022-10-15T09:29:31.000Z">
+<meta property="article:modified_time" content="2024-10-17T08:07:00.273Z">
+<meta property="article:author" content="Yozuru">
+<meta property="article:tag" content="Mybatis Plus">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yozuru.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yozuru.cn/post/5aeac0ae.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"HY3533WS6D","apiKey":"a2319d076c1243f0f625c769dfc80ecd","indexName":"blog_search","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Mybatis Plus学习笔记',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-17 16:07:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Yozuru's Blog"><img class="site-icon" src="/img/favicon.png"/><span class="site-name">Yozuru's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Mybatis Plus学习笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-10-15T09:29:31.000Z" title="发表于 2022-10-15 17:29:31">2022-10-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-17T08:07:00.273Z" title="更新于 2024-10-17 16:07:00">2024-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/">编程日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">学习记录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title="Mybatis Plus学习笔记"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/5aeac0ae.html#post-comment"><span id="twikoo-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/baomidou/mybatis-plus">MyBatis-Plus </a>（简称 MP）是一个 <a target="_blank" rel="noopener" href="https://www.mybatis.org/mybatis-3/">MyBatis</a>的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生。</p>
+</blockquote>
+<h1 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h1><ul>
+<li><p><strong>无侵入</strong>：只做增强不做改变，引入它不会对现有工程产生影响，如丝般顺滑</p>
+</li>
+<li><p><strong>强大的 CRUD 操作</strong>：内置通用 Mapper、通用 Service，仅仅通过少量配置即可实现单表大部分 CRUD 操作，更有强大的条件构造器，满足各类使用需求</p>
+</li>
+<li><p><strong>支持 Lambda 形式调用</strong>：通过 Lambda 表达式，方便的编写各类查询条件，无需再担心字段写错</p>
+</li>
+<li><p><strong>支持主键自动生成</strong>：支持多达 4 种主键策略（内含分布式唯一 ID 生成器 - Sequence），可自由配置，完美解决主键问题</p>
+</li>
+<li><p><strong>内置分页插件</strong>：基于 MyBatis 物理分页，开发者无需关心具体操作，配置好插件之后，写分页等同于普通 List 查询</p>
+<p>…………</p>
+</li>
+</ul>
+<p><em><strong>总之就是，懒得出奇</strong></em></p>
+<h1 id="基本使用步骤"><a href="#基本使用步骤" class="headerlink" title="基本使用步骤"></a>基本使用步骤</h1><p>（1）导入起始依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.baomidou<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-plus-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>（2）在Mapper接口上加上@Mapper注释，并<strong>继承自BaseMapper<T>接口</strong></p>
+<p>（3）创建pojo类，并加上**@TableName**注解，告诉MP应该查询的表名。若pojo类名和表名一样则无需填写。</p>
+<p>（4）现在就已经可以调用BaseMapper里的方法了。</p>
+<h1 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h1><p>（1）调用继承来的SelectPage()方法，传入IPage对象</p>
+<p>（2）设置分页查询的拦截器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyBatisPlusConfig</span> &#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> MybatisPlusInterceptor <span class="title function_">mybatisPlusInterceptor</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">MybatisPlusInterceptor</span> <span class="variable">mybatisPlusInterceptor</span> <span class="operator">=</span><span class="keyword">new</span> <span class="title class_">MybatisPlusInterceptor</span>();</span><br><span class="line">        mybatisPlusInterceptor.addInnerInterceptor(<span class="keyword">new</span> <span class="title class_">PaginationInnerInterceptor</span>());</span><br><span class="line">        <span class="keyword">return</span> mybatisPlusInterceptor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>（3）查询结束后分页信息就封装在IPage对象中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">getByPageTest</span><span class="params">()</span>&#123;</span><br><span class="line">    IPage&lt;Book&gt; page = <span class="keyword">new</span> <span class="title class_">Page</span>&lt;&gt;(<span class="number">1</span>,<span class="number">10</span>);</span><br><span class="line">    bookMapper.selectPage(page,<span class="literal">null</span>);</span><br><span class="line">    System.out.println(<span class="string">&quot;当前页：&quot;</span>+page.getCurrent());</span><br><span class="line">    System.out.println(<span class="string">&quot;总页数：&quot;</span>+page.getPages());</span><br><span class="line">    System.out.println(<span class="string">&quot;每页数据数：&quot;</span>+page.getSize());</span><br><span class="line">    System.out.println(<span class="string">&quot;总数据数：&quot;</span>+page.getTotal());</span><br><span class="line">    System.out.println(<span class="string">&quot;查询结果&quot;</span>+page.getRecords());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h1><h3 id="1、基本操作"><a href="#1、基本操作" class="headerlink" title="1、基本操作"></a>1、基本操作</h3><blockquote>
+<p>方案一：在查询的方法中传入<strong>QueryWrapper</strong>对象，该对象用于条件查询。</p>
+</blockquote>
+<ul>
+<li>并通过<strong>lt</strong>（&lt;&#x3D;）、<strong>le**（&lt;）、**gt**（&gt;&#x3D;）、</strong>ge<strong>（&gt;）、</strong>eq<strong>（&#x3D;&#x3D;）、</strong>like<strong>（like）、</strong>between**,方法设置判断条件</li>
+</ul>
+<p>多条件的 或 运算符可以在两个条件中加入or()方法来实现</p>
+<p>方法入参为 字段名、比较值</p>
+<p>eg:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">QueryWrapper&lt;Book&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();</span><br><span class="line">wrapper.lt(<span class="string">&quot;price&quot;</span>,<span class="number">8</span>)</span><br><span class="line">       .or()</span><br><span class="line">       .ge(<span class="string">&quot;price&quot;</span>,<span class="number">100</span>);</span><br><span class="line">List&lt;Book&gt; books = bookMapper.selectList(wrapper);</span><br></pre></td></tr></table></figure>
+
+<p><strong>ps：这种方式字段名通过字符串的形式输入，不利于debug</strong></p>
+<blockquote>
+<p>方案二：通过<strong>lambda</strong>表达式引用实体类的Getter方法来定位字段名，</p>
+</blockquote>
+<p>首先把传入对象换为<strong>LambdaQueryWrapper</strong>（或者调用QueryWrapper的lambda方法）</p>
+<p>之后通过 ClassName：：MethodName 来引用Getter方法，从而定位指定字段</p>
+<p>eg：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">LambdaQueryWrapper&lt;Book&gt; wrapper = <span class="keyword">new</span> <span class="title class_">LambdaQueryWrapper</span>&lt;&gt;();</span><br><span class="line">wrapper.lt(Book::getPrice,<span class="number">8</span>)</span><br><span class="line">       .or()</span><br><span class="line">       .ge(Book::getPrice,<span class="number">100</span>);</span><br><span class="line">List&lt;Book&gt; books = bookMapper.selectList(wrapper2);</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、null值处理"><a href="#2、null值处理" class="headerlink" title="2、null值处理"></a>2、null值处理</h3><ol>
+<li><p>用If进行条件判断，太low了。</p>
+</li>
+<li><p>le、ge、eq、select、groupBy等方法中的第一个入参可以接受一个Boolean值（<strong>condition</strong>），用来决定这个方法是否生效。</p>
+</li>
+</ol>
+<h3 id="3、查询投影"><a href="#3、查询投影" class="headerlink" title="3、查询投影"></a>3、查询投影</h3><ul>
+<li><p>可以调用<strong>QueryWrapper#select（）</strong>方法来规定查询的字段。入参同上，可以为字符串也可以为lambda表达式</p>
+<ul>
+<li>但是若查询的字段不是实体类中的属性（如count）,则不能用lambda表达式，只能用字符串形式。</li>
+<li>若使用了聚合函数，那么查询使用的方法就应该为selectMaps。</li>
+</ul>
+</li>
+<li><p>可以调用<strong>QueryWrapper#groupBy（）</strong>方法来规定分组的字段，入参同上。</p>
+</li>
+<li><p>可以调用<strong>QueryWrapper#orderByAsc&#x2F;Desc（）</strong>方法来规定排序的字段，入参同上。</p>
+</li>
+</ul>
+<p>eg：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testGetByCondition</span><span class="params">()</span>&#123;</span><br><span class="line">    QueryWrapper&lt;Book&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();</span><br><span class="line">    wrapper.select(<span class="string">&quot;author,count(*) as count&quot;</span>);</span><br><span class="line">    wrapper.lambda().groupBy(Book::getAuthor);</span><br><span class="line">    wrapper.orderByDesc(<span class="string">&quot;count&quot;</span>);</span><br><span class="line">    List&lt;Map&lt;String, Object&gt;&gt; countList = bookMapper.selectMaps(wrapper);</span><br><span class="line">    System.out.println(countList);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="映射问题"><a href="#映射问题" class="headerlink" title="映射问题"></a>映射问题</h1><h3 id="1、表名映射"><a href="#1、表名映射" class="headerlink" title="1、表名映射"></a>1、表名映射</h3><p>在<strong>实体类</strong>上，使用**@TableName**注解来规定查询的表名，不填则默认为实体类名。</p>
+<h3 id="2、字段映射"><a href="#2、字段映射" class="headerlink" title="2、字段映射"></a>2、字段映射</h3><p>在<strong>成员变量</strong>上使用**@TableField**注解</p>
+<ul>
+<li>注解中的<strong>value</strong>属性来映射字段名</li>
+<li>注解中的<strong>exist</strong>属性用来表示表中是否有此字段</li>
+<li>注解中的<strong>select</strong>属性用来设置该字段是否参与查询（敏感数据，比如密码）</li>
+</ul>
+<h2 id="主键生成策略"><a href="#主键生成策略" class="headerlink" title="主键生成策略"></a>主键生成策略</h2><p>1、在主键的<strong>成员变量</strong>上，使用**@TableId**注解。并在type属性上传入一个 IdType枚举类中常量。</p>
+<p>2、在yml中设置 <strong>mybatis.global-config.dbconfig.id-type</strong> 属性，传入这些常量</p>
+<ul>
+<li><p><strong>IdType.<em>AUTO</em></strong>：使用数据库自带的生成策略</p>
+</li>
+<li><p>IdType.<em>NONE</em>：不设置id自动生成策略</p>
+</li>
+<li><p>IdType.INPUT：使用用户手动输入的主键</p>
+</li>
+<li><p><strong>IdType.<em>ASSIGN_ID</em></strong>：用<strong>雪花算法</strong>生成id（可以兼容数值型Long和字符串型）</p>
+<blockquote>
+<p><strong>雪花算法：生成一个64位的二进制串，生成策略如下：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">占位符，固定为0</th>
+<th align="center">时间戳（41）</th>
+<th align="center">机器码+服务码（10）</th>
+<th align="center">序列号（12）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td align="center">10110000011100011001001110000011100011000</td>
+<td align="center">0000000101</td>
+<td align="center">000000000010</td>
+</tr>
+</tbody></table>
+</blockquote>
+</li>
+<li><p>IdType.<em>ASSIGN_UUID</em>：（以UUID生成算法作为id生成策略）</p>
+</li>
+</ul>
+<h1 id="逻辑删除"><a href="#逻辑删除" class="headerlink" title="逻辑删除"></a>逻辑删除</h1><h3 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h3><ul>
+<li><p>删除操作存在着业务问题：业务数据从数据库中直接丢失了</p>
+</li>
+<li><p><strong>逻辑删除：</strong>为数据设置是否可用状态字段：删除时设置状态字段为不可用状态，数据依旧保留在数据库中</p>
+</li>
+</ul>
+<h3 id="在MybatisPlus中的实现方法："><a href="#在MybatisPlus中的实现方法：" class="headerlink" title="在MybatisPlus中的实现方法："></a>在MybatisPlus中的实现方法：</h3><p>1、数据库表中和实体类中加入 业务删除的状态字段</p>
+<p>2、在实体类中对应逻辑删除的成员变量上设置@TableLogic注解</p>
+<p>3、在注解中</p>
+<ul>
+<li><p>设置<strong>value</strong>属性代表<strong>未删除</strong>的状态值，</p>
+</li>
+<li><p>设置<strong>delval</strong>代表<strong>已删除</strong>的状态值</p>
+</li>
+</ul>
+<p>eg：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@TableLogic(value = &quot;0&quot;,delval = &quot;1&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Short deleted;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>当逻辑删除的需求较大时，可在yml中统一配置以下属性：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mybatis-plus:</span></span><br><span class="line">  <span class="attr">global-config:</span></span><br><span class="line">    <span class="attr">db-config:</span></span><br><span class="line">      <span class="attr">logic-delete-field:</span> <span class="string">deleted</span></span><br><span class="line">      <span class="attr">logic-delete-value:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">logic-not-delete-value:</span> <span class="number">0</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h3><p>设置逻辑删除之后，将会把delete方法所映射的Sql语句改为</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> table_name <span class="keyword">SET</span> deleted<span class="operator">=</span><span class="number">1</span> <span class="keyword">WHERE</span> id <span class="operator">=</span> ? <span class="keyword">and</span> deleted <span class="operator">=</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p>把select方法所映射的Sql语句改为</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> table_name <span class="keyword">WHERE</span> deleted<span class="operator">=</span><span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h1><h3 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a>简介</h3><blockquote>
+<p>**悲观锁(Pessimistic Locking)**：系统认为如果不严格的同步线程调用，那么一定会产生异常。所以悲观锁会锁定资源，只让一个线程调用。而阻塞其他的线程。</p>
+</blockquote>
+<blockquote>
+<p><strong>乐观锁(Optimistic Locking)<strong>：基于CAS操作的一种</strong>无锁同步机制</strong>。当线程需要修改共享资源的对象时总是会乐观的认为对象的状态值没有被其他对象修改过。</p>
+<ul>
+<li><p><strong>CAS</strong>：全称compare and swap，比较然后修改状态值。即先比较共享资源是否为可用状态，若为可用则先把状态值变成不可用之后再进行操作。</p>
+<p>若比较为为不可用则开始进行自旋，直到成功等到状态值为可用状态为止。一般也会设置最大自旋次数来防止死循环。</p>
+<p><em><strong>该操作为原子性的</strong></em></p>
+</li>
+</ul>
+</blockquote>
+<h3 id="MybatisPlus中乐观锁的实现"><a href="#MybatisPlus中乐观锁的实现" class="headerlink" title="MybatisPlus中乐观锁的实现"></a>MybatisPlus中乐观锁的实现</h3><p>1、数据库表中和实体类中 加入version字段</p>
+<p>2、在实体类中对应的version成员变量上设置**@Version**注解</p>
+<p>3、在MybatisPlus的设置类中加入乐观锁需要的拦截器 OptimisticLockerInnerInterceptor</p>
+<p>4、执行修改操作时，先查询version值，再根据查询到的version值来进行修改。</p>
+<p>eg：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testVersion</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">Book</span> <span class="variable">book1</span> <span class="operator">=</span> bookMapper.selectById(<span class="number">1</span>);</span><br><span class="line">    <span class="type">Book</span> <span class="variable">book2</span> <span class="operator">=</span> bookMapper.selectById(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    book1.setName(<span class="string">&quot;aaa&quot;</span>);</span><br><span class="line">    book2.setName(<span class="string">&quot;bbb&quot;</span>);</span><br><span class="line"></span><br><span class="line">    bookMapper.updateById(book1);</span><br><span class="line">    bookMapper.updateById(book2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="实现原理-1"><a href="#实现原理-1" class="headerlink" title="实现原理"></a>实现原理</h3><ul>
+<li><p>各个线程在修改数据之前需要先获得版本号。获得同样一个版本号的线程存在线程安全问题</p>
+</li>
+<li><p>之后的update操作会被替换成：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> table_name <span class="keyword">SET</span> version<span class="operator">=</span> VERSION <span class="operator">+</span><span class="number">1</span>,name<span class="operator">=</span> ? <span class="keyword">WHERE</span> id<span class="operator">=</span> ? <span class="keyword">AND</span> version<span class="operator">=</span> VERSION</span><br></pre></td></tr></table></figure>
+
+<p>我们乐观地认为这个update语句是原子性的，即：</p>
+<ul>
+<li>A操作：通过where语句判断 表中的version值和线程获得的version值相等。</li>
+<li>B操作：修改version的值，修改业务数据。</li>
+</ul>
+<p>B操作进行时，version及业务数据还没有被别的线程修改过。</p>
+</li>
+</ul>
+<p><em><strong>通过乐观锁，可以较为便捷的解决小型的并发问题</strong></em></p>
+<h1 id="基于MybatisPlus快速开发业务层"><a href="#基于MybatisPlus快速开发业务层" class="headerlink" title="基于MybatisPlus快速开发业务层"></a>基于MybatisPlus快速开发业务层</h1><h3 id="简介-3"><a href="#简介-3" class="headerlink" title="简介"></a>简介</h3><p>和BaseSql<T>接口类似，MP发现Service层的基本开发也有很多重复的操作。于是推出了：</p>
+<ul>
+<li><strong>IService<T><strong>接口：封装了基本的业务层</strong>抽象方法</strong>。</li>
+<li><strong>ServiceImpl&lt;DAO,T&gt;<strong>类：封装了基本的业务层方法的</strong>实现</strong>。需要传入Dao和实体类。</li>
+</ul>
+<h3 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h3><p>1、让BookService接口继承自**Iservice<T>**接口</p>
+<p>2、让BookServiceImpl实现类继承自<strong>ServiceImpl</strong>，并实现BookService接口</p>
+<p>eg：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">BookService</span> <span class="keyword">extends</span> <span class="title class_">IService</span>&lt;Book&gt; &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BookServiceImpl</span> <span class="keyword">extends</span> <span class="title class_">ServiceImpl</span>&lt;BookMapper, Book&gt; <span class="keyword">implements</span> <span class="title class_">BookService</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样BookService就已经有基本的业务方法了。</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>继承自<strong>IService</strong>的方法有时不能完成我们的业务需求，届时需要自己再重新加入新的方法或重写方法</li>
+<li>学习阶段尽量自己写</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yozuru.cn">Yozuru</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yozuru.cn/post/5aeac0ae.html">https://yozuru.cn/post/5aeac0ae.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yozuru.cn" target="_blank">Yozuru's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Mybatis-Plus/">Mybatis Plus</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/b858d434.html" title="使用MybatisPlus提供的JsonTypeHandler映射实体类对象"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-06</div><div class="title">使用MybatisPlus提供的JsonTypeHandler映射实体类对象</div></div></a></div><div><a href="/post/c9054be7.html" title="在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-17</div><div class="title">在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%89%B9%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">特点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%AA%A4"><span class="toc-number">3.</span> <span class="toc-text">基本使用步骤</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2"><span class="toc-number">4.</span> <span class="toc-text">分页查询</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E6%9F%A5%E8%AF%A2"><span class="toc-number">5.</span> <span class="toc-text">条件查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="toc-number">5.0.1.</span> <span class="toc-text">1、基本操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81null%E5%80%BC%E5%A4%84%E7%90%86"><span class="toc-number">5.0.2.</span> <span class="toc-text">2、null值处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E6%9F%A5%E8%AF%A2%E6%8A%95%E5%BD%B1"><span class="toc-number">5.0.3.</span> <span class="toc-text">3、查询投影</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%98%A0%E5%B0%84%E9%97%AE%E9%A2%98"><span class="toc-number">6.</span> <span class="toc-text">映射问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E8%A1%A8%E5%90%8D%E6%98%A0%E5%B0%84"><span class="toc-number">6.0.1.</span> <span class="toc-text">1、表名映射</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%AD%97%E6%AE%B5%E6%98%A0%E5%B0%84"><span class="toc-number">6.0.2.</span> <span class="toc-text">2、字段映射</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E9%94%AE%E7%94%9F%E6%88%90%E7%AD%96%E7%95%A5"><span class="toc-number">6.1.</span> <span class="toc-text">主键生成策略</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4"><span class="toc-number">7.</span> <span class="toc-text">逻辑删除</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B-1"><span class="toc-number">7.0.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8MybatisPlus%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">7.0.2.</span> <span class="toc-text">在MybatisPlus中的实现方法：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">7.0.3.</span> <span class="toc-text">实现原理</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B9%90%E8%A7%82%E9%94%81"><span class="toc-number">8.</span> <span class="toc-text">乐观锁</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B-2"><span class="toc-number">8.0.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MybatisPlus%E4%B8%AD%E4%B9%90%E8%A7%82%E9%94%81%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">8.0.2.</span> <span class="toc-text">MybatisPlus中乐观锁的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86-1"><span class="toc-number">8.0.3.</span> <span class="toc-text">实现原理</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EMybatisPlus%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E4%B8%9A%E5%8A%A1%E5%B1%82"><span class="toc-number">9.</span> <span class="toc-text">基于MybatisPlus快速开发业务层</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B-3"><span class="toc-number">9.0.1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%AD%A5%E9%AA%A4"><span class="toc-number">9.0.2.</span> <span class="toc-text">使用步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">9.0.3.</span> <span class="toc-text">注意事项</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/default_top.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Yozuru</div><div class="footer_custom_text">Hi, welcome to my blog.</br><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">豫ICP备2023018923号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.textContent = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '1gRcPIUcCbZVQE6BdQZFSn80-gzGzoHsz',
+      appKey: 'urPscmzTqJuEnp3LDCdod6pz',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>

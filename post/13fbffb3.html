@@ -1,0 +1,334 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>SpringMVC中Jackson反序列化将空字符串转为null | Yozuru's Blog</title><meta name="author" content="Yozuru"><meta name="copyright" content="Yozuru"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="场景分析在Restful风格的接口中，参数经常需要以JSON的形式通过RequestBody传递到后端。后端接收到数据进行反序列化的过程中，有一类参数是很棘手的。那就是JSON串里的 “” 空字符串。 项目中使用的是MybatisPlus，在进行Update操作时，不更新的字段需要设置为null。若字符串字段的内容为“”则会触发更新操作，把原有的值设置为空字符串。这一定是和预期不符的。所以对于JS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringMVC中Jackson反序列化将空字符串转为null">
+<meta property="og:url" content="https://yozuru.cn/post/13fbffb3.html">
+<meta property="og:site_name" content="Yozuru&#39;s Blog">
+<meta property="og:description" content="场景分析在Restful风格的接口中，参数经常需要以JSON的形式通过RequestBody传递到后端。后端接收到数据进行反序列化的过程中，有一类参数是很棘手的。那就是JSON串里的 “” 空字符串。 项目中使用的是MybatisPlus，在进行Update操作时，不更新的字段需要设置为null。若字符串字段的内容为“”则会触发更新操作，把原有的值设置为空字符串。这一定是和预期不符的。所以对于JS">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yozuru.cn/img/avatar.jpg">
+<meta property="article:published_time" content="2023-08-25T09:30:00.000Z">
+<meta property="article:modified_time" content="2024-10-17T08:07:00.290Z">
+<meta property="article:author" content="Yozuru">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring MVC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yozuru.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yozuru.cn/post/13fbffb3.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"HY3533WS6D","apiKey":"a2319d076c1243f0f625c769dfc80ecd","indexName":"blog_search","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'SpringMVC中Jackson反序列化将空字符串转为null',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-17 16:07:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Yozuru's Blog"><img class="site-icon" src="/img/favicon.png"/><span class="site-name">Yozuru's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">SpringMVC中Jackson反序列化将空字符串转为null</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-25T09:30:00.000Z" title="发表于 2023-08-25 17:30:00">2023-08-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-17T08:07:00.290Z" title="更新于 2024-10-17 16:07:00">2024-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/">编程日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/%E7%BC%96%E7%A8%8B%E8%AE%B0%E5%BD%95/">编程记录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title="SpringMVC中Jackson反序列化将空字符串转为null"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/13fbffb3.html#post-comment"><span id="twikoo-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="场景分析"><a href="#场景分析" class="headerlink" title="场景分析"></a>场景分析</h1><p>在<strong>Restful</strong>风格的接口中，参数经常需要以<strong>JSON</strong>的形式通过<strong>RequestBody</strong>传递到后端。后端接收到数据进行反序列化的过程中，有一类参数是很棘手的。那就是JSON串里的 <code>“”</code> 空字符串。</p>
+<p>项目中使用的是MybatisPlus，在进行Update操作时，不更新的字段需要设置为null。若字符串字段的内容为<code>“”</code>则会触发更新操作，把原有的值设置为空字符串。这一定是和预期不符的。所以对于JSON串里的 <code>“”</code> 空字符串，它们大多数情况下需要被反序列化为null而非空字符串。避免在后续进行冗余的判断。</p>
+<p>本文将本文通过不同类型的场景，分别进行说明。</p>
+<h1 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h1><p>在项目中有这样一个<strong>DTO</strong>，用来接收前端传来的参数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">KnowledgePointDTO</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Schema(description = &quot;知识点id,添加时必须为空,修改时不能为空&quot;)</span></span><br><span class="line">    <span class="meta">@Null(message = &quot;id必须为空&quot;, groups = &#123;Add.class&#125;)</span></span><br><span class="line">    <span class="meta">@NotNull(message = &quot;id不能为空&quot;, groups = &#123;Update.class&#125;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Schema(description = &quot;标题,长度1-32&quot;)</span></span><br><span class="line">    <span class="meta">@NotNull(message = &quot;标题不能为空&quot;, groups = &#123;Add.class&#125;)</span></span><br><span class="line">    <span class="meta">@Length(min = 1, max = 32, message = &quot;标题长度必须在1-32之间&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String title;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Schema(description = &quot;内容(md),需要经过Base64编码&quot;)</span></span><br><span class="line">    <span class="meta">@NotNull(message = &quot;内容不能为空&quot;, groups = &#123;Add.class&#125;)</span></span><br><span class="line">    <span class="meta">@Length(min = 1, max = 8192, message = &quot;内容长度必须在1-8192之间&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String content;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Schema(description = &quot;所在的目录,长度1-32。&quot;)</span></span><br><span class="line">    <span class="meta">@NotNull(message = &quot;目录不能为空&quot;, groups = &#123;Add.class&#125;)</span></span><br><span class="line">    <span class="meta">@Length(min = 1, max = 32, message = &quot;目录长度必须在1-32之间&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String index;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> KnowledgePoint <span class="title function_">toEntity</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">KnowledgePoint</span> <span class="variable">knowledgePoint</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">KnowledgePoint</span>();</span><br><span class="line">        knowledgePoint.setTitle(<span class="built_in">this</span>.title);</span><br><span class="line">        knowledgePoint.setContent(<span class="built_in">this</span>.content);</span><br><span class="line">        knowledgePoint.setIndex(<span class="built_in">this</span>.index);</span><br><span class="line">        knowledgePoint.setId(<span class="built_in">this</span>.id);</span><br><span class="line">        <span class="keyword">return</span> knowledgePoint;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Add</span> <span class="keyword">extends</span> <span class="title class_">Default</span> &#123;&#125;;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Update</span> <span class="keyword">extends</span> <span class="title class_">Default</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里在更新操作时，<code>title</code>、<code>content</code>、<code>index</code>都有可能为空，且前端有可能会传递空字符串过来。我们需要把它转换为null。</p>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><h3 id="1、toEntity"><a href="#1、toEntity" class="headerlink" title="1、toEntity()"></a>1、toEntity()</h3><p>这是我之前一直使用的方案，因为操控数据库的对象是它的实体类，所以在后续我们会通过toEntity()方法把它转换为对应的实体类。</p>
+<p>那么就代表着我们可以在这里进行一层判断。把<code>“”</code>转换为null。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> KnowledgePoint <span class="title function_">toEntity</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">KnowledgePoint</span> <span class="variable">knowledgePoint</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">KnowledgePoint</span>();</span><br><span class="line">    knowledgePoint.setTitle(StringUtils.isEmpty(<span class="built_in">this</span>.title) ? <span class="literal">null</span> : <span class="built_in">this</span>.title);</span><br><span class="line">    knowledgePoint.setContent(StringUtils.isEmpty(<span class="built_in">this</span>.content) ? <span class="literal">null</span> : <span class="built_in">this</span>.content);</span><br><span class="line">    knowledgePoint.setIndex(StringUtils.isEmpty(<span class="built_in">this</span>.index) ? <span class="literal">null</span> : <span class="built_in">this</span>.index);</span><br><span class="line">    knowledgePoint.setId(<span class="built_in">this</span>.id);</span><br><span class="line">    <span class="keyword">return</span> knowledgePoint;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>优点：最容易想到的方法，实现简单</li>
+<li>缺点：<ul>
+<li>只适用于这一种场景，若这个DTO在转换为实体类之前被使用，则会出现预料外的情况</li>
+<li><code>“”</code>会通过<strong>JSR303</strong>的 <strong><code>@NotNull</code></strong> 校验，这问题就很麻烦<ul>
+<li>虽然<code>@NotBlank</code>注解可以解决，它会判断null和空白字符串。但是这其实是架构上的问题，<strong>参数的校验应该在转换之前</strong>，我有强迫症，你知道的。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="2、convertEmptyStringToNull"><a href="#2、convertEmptyStringToNull" class="headerlink" title="2、convertEmptyStringToNull()"></a>2、convertEmptyStringToNull()</h3><p>这是我临时想的方案，除了使用场景更通用外，跟<code>toEntity()</code>没有本质区别。为了这个需求还需要为每个方法都编写一遍。此乃<strong>下策</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">convertEmptyStringToNull</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.title = StringUtils.isEmpty(<span class="built_in">this</span>.title) ? <span class="literal">null</span> : <span class="built_in">this</span>.title</span><br><span class="line">	<span class="built_in">this</span>.content = StringUtils.isEmpty(<span class="built_in">this</span>.content) ? <span class="literal">null</span> : <span class="built_in">this</span>.content</span><br><span class="line">	<span class="built_in">this</span>.index = StringUtils.isEmpty(<span class="built_in">this</span>.index) ? <span class="literal">null</span> : <span class="built_in">this</span>.index</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>优点：emmm硬说也就是使用场景更通用</li>
+<li>缺点：<ul>
+<li>需要在业务方法中额外调用，太不优雅</li>
+<li>没有解决<strong>参数的校验应该在转换之前</strong>这个问题</li>
+</ul>
+</li>
+</ul>
+<h3 id="3、修改ObjectMapper"><a href="#3、修改ObjectMapper" class="headerlink" title="3、修改ObjectMapper"></a>3、修改ObjectMapper</h3><p>这个方案是通过修改ObjectMapper来实现需求。</p>
+<p><code>ObjectMapper</code>在反序列化过程中负责把Json映射成对象。可以说是各种JSON库中最核心的对象之一了。我们可以通过编辑这个对象，把空字符串映射为null。</p>
+<p>但是我们一般不直接修改ObjectMapper或者是它的Builder。而是修改一个 <strong><code>Jackson2ObjectMapperBuilderCustomizer</code></strong> 的对象，来控制ObjectMapper的Builder从而达到修改ObjectMapper的目的。</p>
+<p>这里就直接上代码了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> Jackson2ObjectMapperBuilderCustomizer <span class="title function_">customizeJackson</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> builder -&gt; &#123;</span><br><span class="line">        builder.serializationInclusion(JsonInclude.Include.NON_EMPTY);</span><br><span class="line">        builder.serializationInclusion(JsonInclude.Include.NON_NULL);</span><br><span class="line">        builder.featuresToEnable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);</span><br><span class="line">        builder.modulesToInstall(emptyStringToNullModule());</span><br><span class="line">        <span class="comment">// 可以添加其他的配置</span></span><br><span class="line">        builder.dateFormat(<span class="keyword">new</span> <span class="title class_">SimpleDateFormat</span>(<span class="string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>));</span><br><span class="line">        builder.featuresToEnable(SerializationFeature.INDENT_OUTPUT);</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> SimpleModule <span class="title function_">emptyStringToNullModule</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">SimpleModule</span> <span class="variable">module</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SimpleModule</span>();</span><br><span class="line">    <span class="keyword">module</span>.addDeserializer(String.class, <span class="keyword">new</span> <span class="title class_">StdDeserializer</span>&lt;String&gt;(String.class) &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">deserialize</span><span class="params">(JsonParser p, DeserializationContext ctxt)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> StringDeserializer.instance.deserialize(p, ctxt);</span><br><span class="line">            <span class="keyword">if</span> (StringUtils.isEmpty(result)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">module</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过注册Jackson2ObjectMapperBuilderCustomizer来“定制”一个ObjectMapperBuilder对象。</p>
+<p>这里真正完成这个需求的是<code>builder.modulesToInstall(emptyStringToNullModule());</code></p>
+<p>这是为<code>ObjectMapper</code>注册了一个<code>Model</code>。这个model中定义了反序列化String类型时的逻辑。在那里把空字符串映射成了null。从而完成了需求。</p>
+<p>其中<code> builder.featuresToEnable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);</code>这一行的作用是：空字符串反序列化为POJO对象时，若字符串为空串则映射为null。注意，<strong>它并不作用于String</strong>文档中对于POJO对象的描述是这样的：</p>
+<blockquote>
+<p>Feature that can be enabled to allow JSON empty String value (“”) to be bound as <code>null</code> for POJOs and other structured values (java.util.Maps, java.util.Collections).</p>
+</blockquote>
+<p>这样修改完之后，空字符串将被反序列化为null。从而完成了需求。</p>
+<ul>
+<li>优点：在校验阶段之前，就完成了对象的映射。流程上更加合理，最主要的是。更加的<strong>优雅</strong></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yozuru.cn">Yozuru</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yozuru.cn/post/13fbffb3.html">https://yozuru.cn/post/13fbffb3.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yozuru.cn" target="_blank">Yozuru's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a><a class="post-meta__tags" href="/tags/Spring-MVC/">Spring MVC</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/8cd3e59c.html" title="SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-01</div><div class="title">SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池</div></div></a></div><div><a href="/post/62ea1481.html" title="Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-14</div><div class="title">Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？</div></div></a></div><div><a href="/post/b858d434.html" title="使用MybatisPlus提供的JsonTypeHandler映射实体类对象"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-06</div><div class="title">使用MybatisPlus提供的JsonTypeHandler映射实体类对象</div></div></a></div><div><a href="/post/c9054be7.html" title="在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-17</div><div class="title">在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E5%88%86%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">场景分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B"><span class="toc-number">2.</span> <span class="toc-text">案例</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">3.</span> <span class="toc-text">解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81toEntity"><span class="toc-number">3.0.1.</span> <span class="toc-text">1、toEntity()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81convertEmptyStringToNull"><span class="toc-number">3.0.2.</span> <span class="toc-text">2、convertEmptyStringToNull()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E4%BF%AE%E6%94%B9ObjectMapper"><span class="toc-number">3.0.3.</span> <span class="toc-text">3、修改ObjectMapper</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/default_top.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Yozuru</div><div class="footer_custom_text">Hi, welcome to my blog.</br><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">豫ICP备2023018923号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.textContent = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '1gRcPIUcCbZVQE6BdQZFSn80-gzGzoHsz',
+      appKey: 'urPscmzTqJuEnp3LDCdod6pz',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>

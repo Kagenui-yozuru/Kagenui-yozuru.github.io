@@ -1,0 +1,412 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>如何优雅地把SpringBoot项目部署到服务端Docker | Yozuru's Blog</title><meta name="author" content="Yozuru"><meta name="copyright" content="Yozuru"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="步骤分析把SpringBoot项目部署到服务端Docker大致就分这几步： 1、打包（Package）配置pom文件中的&lt;build&gt;属性，这样在mvn build时可以把项目打成可直接运行的Jar包， 12345678910111213141516171819202122&lt;build&gt;        &lt;plugins&gt;            &lt;plugi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何优雅地把SpringBoot项目部署到服务端Docker">
+<meta property="og:url" content="https://yozuru.cn/post/6f1d7a0f.html">
+<meta property="og:site_name" content="Yozuru&#39;s Blog">
+<meta property="og:description" content="步骤分析把SpringBoot项目部署到服务端Docker大致就分这几步： 1、打包（Package）配置pom文件中的&lt;build&gt;属性，这样在mvn build时可以把项目打成可直接运行的Jar包， 12345678910111213141516171819202122&lt;build&gt;        &lt;plugins&gt;            &lt;plugi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yozuru.cn/img/avatar.jpg">
+<meta property="article:published_time" content="2023-08-17T11:34:46.000Z">
+<meta property="article:modified_time" content="2024-10-17T08:07:00.357Z">
+<meta property="article:author" content="Yozuru">
+<meta property="article:tag" content="Spring Boot">
+<meta property="article:tag" content="Huel OJ">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yozuru.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yozuru.cn/post/6f1d7a0f.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"HY3533WS6D","apiKey":"a2319d076c1243f0f625c769dfc80ecd","indexName":"blog_search","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '如何优雅地把SpringBoot项目部署到服务端Docker',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-17 16:07:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Yozuru's Blog"><img class="site-icon" src="/img/favicon.png"/><span class="site-name">Yozuru's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">如何优雅地把SpringBoot项目部署到服务端Docker</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-17T11:34:46.000Z" title="发表于 2023-08-17 19:34:46">2023-08-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-17T08:07:00.357Z" title="更新于 2024-10-17 16:07:00">2024-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/">编程日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/">技术方案</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title="如何优雅地把SpringBoot项目部署到服务端Docker"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/6f1d7a0f.html#post-comment"><span id="twikoo-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="步骤分析"><a href="#步骤分析" class="headerlink" title="步骤分析"></a>步骤分析</h1><p>把SpringBoot项目部署到服务端Docker大致就分这几步：</p>
+<h3 id="1、打包（Package）"><a href="#1、打包（Package）" class="headerlink" title="1、打包（Package）"></a>1、打包（Package）</h3><p>配置pom文件中的<code>&lt;build&gt;</code>属性，这样在<code>mvn build</code>时可以把项目打成可直接运行的Jar包，</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.7.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span>$&#123;mainClass&#125;<span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">finalName</span>&gt;</span>$&#123;finalName&#125;<span class="tag">&lt;/<span class="name">finalName</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">id</span>&gt;</span>repackage<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>repackage<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这步操作就是引入了SpringBoot的打包插件，借助这个插件可以把SpringBoot打包成可直接运行的Jar包。</p>
+<h3 id="2、编写DockerFile，把Jar包做成镜像"><a href="#2、编写DockerFile，把Jar包做成镜像" class="headerlink" title="2、编写DockerFile，把Jar包做成镜像"></a>2、编写DockerFile，把Jar包做成镜像</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#基础镜像使用jdk1.8</span></span><br><span class="line"><span class="keyword">FROM</span> openjdk:<span class="number">8</span></span><br><span class="line"><span class="comment">#作者</span></span><br><span class="line"><span class="keyword">MAINTAINER</span> yozuru</span><br><span class="line"><span class="comment">#设置时区</span></span><br><span class="line"><span class="keyword">ENV</span> TZ=<span class="string">&quot;Asia/Shanghai&quot;</span></span><br><span class="line"><span class="keyword">ENV</span> JAVA_OPTS=<span class="string">&quot;&quot;</span></span><br><span class="line"><span class="comment"># 默认的Spring Boot启动参数</span></span><br><span class="line"><span class="keyword">ENV</span> SPRING_PROFILES_ACTIVE=<span class="string">&quot;pro&quot;</span></span><br><span class="line"><span class="keyword">ARG</span> JAR_FILE</span><br><span class="line"><span class="comment"># 创建日志目录</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">mkdir</span> -p /app/logs &amp;&amp; \</span></span><br><span class="line"><span class="language-bash">    <span class="built_in">chmod</span> 777 /app</span></span><br><span class="line"><span class="comment"># 将jar包添加到容器中并更名</span></span><br><span class="line"><span class="keyword">ADD</span><span class="language-bash"> <span class="variable">$&#123;JAR_FILE&#125;</span> /app/app.jar</span></span><br><span class="line"><span class="comment"># 设置时区</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">ln</span> -snf /usr/share/zoneinfo/<span class="variable">$TZ</span> /etc/localtime &amp;&amp; <span class="built_in">echo</span> <span class="string">&#x27;$TZ&#x27;</span> &gt; /etc/timezone</span></span><br><span class="line"><span class="comment"># 运行jar包</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> java <span class="variable">$JAVA_OPTS</span> -jar /app/app.jar --spring.profiles.active=<span class="variable">$SPRING_PROFILES_ACTIVE</span></span></span><br><span class="line"><span class="comment"># 暴露8080端口作为微服务</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">8080</span></span><br></pre></td></tr></table></figure>
+
+<p>这个镜像中通过对外暴露<code>JAVA_OPTS</code>和<code>SPRING_PROFILES_ACTIVE</code>，让外部可以控制JVM的启动参数和SpringBoot的配置环境。</p>
+<h3 id="3、编写docker-compose-yml（可选）"><a href="#3、编写docker-compose-yml（可选）" class="headerlink" title="3、编写docker-compose.yml（可选）"></a>3、编写docker-compose.yml（可选）</h3><p>我习惯于用docker-compose来帮助构建Docker容器。特别是在微服务项目中，通过命令实例化容器过于繁琐。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;3&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">huel-oj-network:</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">hueloj-admin:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hueloj/admin:1.0</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">hueloj-admin</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8080:8080&quot;</span></span><br><span class="line">    <span class="attr">deploy:</span></span><br><span class="line">      <span class="attr">resources:</span></span><br><span class="line">        <span class="attr">limits:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">1024M</span></span><br><span class="line">        <span class="attr">reservations:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">512M</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">JAVA_OPTS=-Xmx512m</span> <span class="string">-Xss256k</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">/root/app/admin:/app/logs</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">huel-oj-network</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">hueloj-gateway-1</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">hueloj-gateway-1:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hueloj/gateway:1.0</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">hueloj-gateway-1</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;10010:8080&quot;</span></span><br><span class="line">    <span class="attr">deploy:</span></span><br><span class="line">      <span class="attr">resources:</span></span><br><span class="line">        <span class="attr">limits:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">1024M</span></span><br><span class="line">        <span class="attr">reservations:</span></span><br><span class="line">          <span class="attr">memory:</span> <span class="string">512M</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">JAVA_OPTS=-Xms512m</span> <span class="string">-Xmx512m</span> <span class="string">-Xss128k</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">/root/app/gateway:/app/logs</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">huel-oj-network</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># OtherService……</span></span><br></pre></td></tr></table></figure>
+
+<p>这里指定了具体的镜像名称和tag，等会打包时要跟这个一致。</p>
+<h3 id="4、上传至服务器"><a href="#4、上传至服务器" class="headerlink" title="4、上传至服务器"></a>4、上传至服务器</h3><p>把打好的Jar包、DockerFile、docker-compose.yml 统统上传至服务器。</p>
+<h3 id="5、构建镜像"><a href="#5、构建镜像" class="headerlink" title="5、构建镜像"></a>5、构建镜像</h3><p>把Jar包和DockerFile放在同一目录中，运行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t survey_star_app:1.0 .</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-t</code> 参数表示为镜像指定一个名称和标签</li>
+<li><code>.</code>是构建上下文的路径。Docker 在构建镜像时会将这个路径下的所有文件和子文件夹包含在内，以供构建过程中使用。</li>
+</ul>
+<p>除此之外，<code>docker build</code>命令还有这参数：</p>
+<ul>
+<li><code>-f &lt;Dockerfile&gt;</code>：指定要使用的 Dockerfile 文件的路径。如果您的构建上下文中有多个 Dockerfile，可以使用这个参数来明确指定要使用哪一个。</li>
+<li><code>--build-arg &lt;key=value&gt;</code>：定义构建过程中传递给 Dockerfile 的构建参数。在 Dockerfile 中，您可以使用 <code>ARG</code> 指令来引用这些参数。</li>
+</ul>
+<h3 id="6、实例化容器"><a href="#6、实例化容器" class="headerlink" title="6、实例化容器"></a>6、实例化容器</h3><p>创建一个工作目录，把刚才上传的<strong>docker-compose.yml</strong>文件给也放进来。启动容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose up -d</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>up</code>会构建、启动容器</li>
+<li><code>-d</code>指后台运行</li>
+</ul>
+<h3 id="7、更新步骤"><a href="#7、更新步骤" class="headerlink" title="7、更新步骤"></a>7、更新步骤</h3><ul>
+<li><p>进入工作目录，运行以下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose down</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>down</code>会把这个docker-compose.yml文件所定义的容器全部停止（stop）和删除（remove）</li>
+</ul>
+</li>
+<li><p>删除镜像，运行以下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br><span class="line"><span class="comment"># 查看需要删除的镜像id</span></span><br><span class="line">docker rmi [镜像<span class="built_in">id</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重复1、4、5、6步操作</p>
+</li>
+</ul>
+<h1 id="存在问题"><a href="#存在问题" class="headerlink" title="存在问题"></a>存在问题</h1><h3 id="1、太麻烦啦！"><a href="#1、太麻烦啦！" class="headerlink" title="1、太麻烦啦！"></a>1、太麻烦啦！</h3><p>如果是单个的SpringBoot项目还好，只有1个Jar包1个镜像。手动进行以上操作也还能操作的过来。</p>
+<p>但！是！在Spring Cloud项目中，这简直就是噩梦。就目前开发的算是比较简单的项目，就已经有5个Jar包了。</p>
+<p>如果不优化方案的话，每次更新项目的画风是这样的：</p>
+<ul>
+<li><p>在IDEA中把这5个模块包在本地打包。</p>
+</li>
+<li><p>把Jar包上传到服务器。</p>
+</li>
+<li><p><code>down</code>掉正在运行的容器，删除掉旧的镜像</p>
+</li>
+<li><p>把5个Jar包打成镜像，还要注意Jar包和DockerFile的目录</p>
+</li>
+<li><p>重新up服务</p>
+</li>
+</ul>
+<p>听着就麻烦！</p>
+<h3 id="2、好像除了麻烦也没啥了"><a href="#2、好像除了麻烦也没啥了" class="headerlink" title="2、好像除了麻烦也没啥了"></a>2、好像除了麻烦也没啥了</h3><h1 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h1><h3 id="1、docker-maven-plugin"><a href="#1、docker-maven-plugin" class="headerlink" title="1、docker-maven-plugin"></a>1、docker-maven-plugin</h3><p>docker-maven-plugin是Maven的一个插件，可以在本地直接把Jar包打到远端的Docker中。这样就可以省略掉第4、5步操作。</p>
+<p>首先在<code>pom</code>文件中添加如下配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.spotify<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>docker-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 远程Docker的地址 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">dockerHost</span>&gt;</span>https://**:2375<span class="tag">&lt;/<span class="name">dockerHost</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">dockerCertPath</span>&gt;</span>F:\**\pem<span class="tag">&lt;/<span class="name">dockerCertPath</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 镜像名称、前缀、项目名 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">imageName</span>&gt;</span>$&#123;docker.image.prefix&#125;/$&#123;project.artifactId&#125;<span class="tag">&lt;/<span class="name">imageName</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">imageTags</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">imageTag</span>&gt;</span>$&#123;project.version&#125;<span class="tag">&lt;/<span class="name">imageTag</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">imageTag</span>&gt;</span>latest<span class="tag">&lt;/<span class="name">imageTag</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">imageTags</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- Dockerfile的位置 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">dockerDirectory</span>&gt;</span>$&#123;project.basedir&#125;<span class="tag">&lt;/<span class="name">dockerDirectory</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">buildArgs</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">JAR_FILE</span>&gt;</span>$&#123;finalName&#125;.jar<span class="tag">&lt;/<span class="name">JAR_FILE</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">buildArgs</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">targetPath</span>&gt;</span>/<span class="tag">&lt;/<span class="name">targetPath</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 表示的target文件夹 --&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">directory</span>&gt;</span>$&#123;project.build.directory&#125;<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">                        <span class="comment">&lt;!-- 表示打出来的JAR包--&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">include</span>&gt;</span>$&#123;finalName&#125;.jar<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>这里我由于之前配置了远程登录Docker的相关设置，可以通过Https的方式连接到服务端的Docker。具体配置方法我就不在这里展开了。后续可能会在其它文章中详细说明。似乎这个插件是支持账号密码连接的。</p>
+<blockquote>
+<p>注意，不要轻易的打开Docker的<strong>远程连接</strong>设置。除非你<strong>知道自己在做什么</strong>。</p>
+</blockquote>
+<p>通过<code>dockerHost</code>和&#96;dockerCertPath连接到Docker</p>
+</li>
+<li><p>常用的参数就这些，基本都可以见名知意。</p>
+</li>
+</ul>
+<p>这样配置之后，在本地运行以下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mvn docker:removeImage</span><br><span class="line">mvn docker:build</span><br></pre></td></tr></table></figure>
+
+<p>就可以对服务端的容器进行删除、构建了。</p>
+<h3 id="2、配置SSH连接"><a href="#2、配置SSH连接" class="headerlink" title="2、配置SSH连接"></a>2、配置SSH连接</h3><p>由于每次更新操作执行的命令都是固定的，所以完全可以在本地编写一个脚本远程执行命令，在这之前要先配置SSH公私钥连接。大致步骤如下：</p>
+<ul>
+<li><p><strong>生成SSH密钥对：</strong> 在本地计算机上生成一对密钥。打开终端并运行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+
+<p>这将生成一对RSA密钥，通常保存在<code>~/.ssh</code>目录下的<code>id_rsa</code>（私钥）和<code>id_rsa.pub</code>（公钥）文件中。复制公钥的内容。</p>
+</li>
+<li><p>配置服务器SSH访问</p>
+<ul>
+<li><p>在服务器上，打开<code>/root/.ssh</code>目录（如果不存在，则创建它）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p ~/.ssh</span><br><span class="line"><span class="built_in">chmod</span> 700 ~/.ssh</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建或编辑<code>~/.ssh/authorized_keys</code>文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>粘贴之前复制的公钥内容到<code>authorized_keys</code>文件中。</p>
+</li>
+<li><p>保存文件并退出编辑器。</p>
+</li>
+</ul>
+</li>
+<li><p>配置文件权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">chmod</span> 600 ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>如果是<strong>root</strong>用户，则需要对<code>sshd_config</code>进行配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>确保以下设置处于启用状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PubkeyAuthentication <span class="built_in">yes</span></span><br><span class="line">PasswordAuthentication <span class="built_in">yes</span>  <span class="comment"># 可选，如果您决定只使用公钥身份验证，请将其设置为“no”</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>重启SSH服务：</strong> 重新启动SSH服务以使更改生效：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart sshd</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>测试连接</strong>：在本地的终端执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@server_ip</span><br></pre></td></tr></table></figure>
+
+<p>若能直接连接，则证明已经成功配置。</p>
+</li>
+</ul>
+<h3 id="3、编写bat脚本"><a href="#3、编写bat脚本" class="headerlink" title="3、编写bat脚本"></a>3、编写bat脚本</h3><p>经过以上配置，虽然操作已经没那么繁琐了，但是还是要在IDEA中点来点去，着实不够优雅。最终决定编写一个bat脚本来实现<strong>一键部署、更新</strong>。</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@<span class="built_in">echo</span> off</span><br><span class="line">ssh root@server_ip &quot;<span class="built_in">cd</span> ~/app &amp;&amp; docker compose down&quot;</span><br><span class="line"><span class="comment">rem 列出所有需要处理的模块</span></span><br><span class="line"><span class="built_in">set</span> &quot;MODULES=admin gateway judge-service problem-service user-service&quot;</span><br><span class="line"><span class="keyword">call</span> mvn clean package -f pom.xml  -DskipTests=true</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> <span class="variable">%%M</span> <span class="keyword">in</span> (<span class="variable">%MODULES%</span>) <span class="keyword">do</span> (</span><br><span class="line">    <span class="built_in">echo</span> Building Docker image <span class="keyword">for</span> <span class="variable">%%M</span></span><br><span class="line"><span class="comment">    rem 进入模块目录</span></span><br><span class="line">    <span class="built_in">cd</span> <span class="variable">%%M</span></span><br><span class="line"><span class="comment">    rem 执行Maven的Docker插件，构建镜像</span></span><br><span class="line">    <span class="keyword">call</span> mvn docker:removeImage docker:build -f pom.xml -DskipTests=true</span><br><span class="line"><span class="comment">    rem 返回项目根目录</span></span><br><span class="line">    <span class="built_in">cd</span> ..</span><br><span class="line">)</span><br><span class="line">ssh root@server_ip &quot;<span class="built_in">cd</span> ~/app &amp;&amp; docker compose up -d&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这样就可以实现一键打包、构建、删除、更新、部署操作。</p>
+<p>优雅！太优雅了！</p>
+<p><img src="https://yozuru-markdown.oss-cn-qingdao.aliyuncs.com/%E4%BC%98%E9%9B%85%EF%BC%81.gif" alt="优雅！"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yozuru.cn">Yozuru</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yozuru.cn/post/6f1d7a0f.html">https://yozuru.cn/post/6f1d7a0f.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yozuru.cn" target="_blank">Yozuru's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spring-Boot/">Spring Boot</a><a class="post-meta__tags" href="/tags/Huel-OJ/">Huel OJ</a><a class="post-meta__tags" href="/tags/Docker/">Docker</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/8cd3e59c.html" title="SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-01</div><div class="title">SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池</div></div></a></div><div><a href="/post/62ea1481.html" title="Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-14</div><div class="title">Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？</div></div></a></div><div><a href="/post/b858d434.html" title="使用MybatisPlus提供的JsonTypeHandler映射实体类对象"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-06</div><div class="title">使用MybatisPlus提供的JsonTypeHandler映射实体类对象</div></div></a></div><div><a href="/post/c9054be7.html" title="在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-17</div><div class="title">在Mybatis Plus中使用TypeHandler映射PostgreSQL内的JSON字段</div></div></a></div><div><a href="/post/dbea8968.html" title="基于Docker私有化部署TeamSpeak3服务端"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-16</div><div class="title">基于Docker私有化部署TeamSpeak3服务端</div></div></a></div><div><a href="/post/b622eccc.html" title="基于Hexo + Git + Nginx|GitHub Pages 一键部署、更新博客"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-31</div><div class="title">基于Hexo + Git + Nginx|GitHub Pages 一键部署、更新博客</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4%E5%88%86%E6%9E%90"><span class="toc-number">1.</span> <span class="toc-text">步骤分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E6%89%93%E5%8C%85%EF%BC%88Package%EF%BC%89"><span class="toc-number">1.0.1.</span> <span class="toc-text">1、打包（Package）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E7%BC%96%E5%86%99DockerFile%EF%BC%8C%E6%8A%8AJar%E5%8C%85%E5%81%9A%E6%88%90%E9%95%9C%E5%83%8F"><span class="toc-number">1.0.2.</span> <span class="toc-text">2、编写DockerFile，把Jar包做成镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E7%BC%96%E5%86%99docker-compose-yml%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="toc-number">1.0.3.</span> <span class="toc-text">3、编写docker-compose.yml（可选）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E3%80%81%E4%B8%8A%E4%BC%A0%E8%87%B3%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">1.0.4.</span> <span class="toc-text">4、上传至服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5%E3%80%81%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F"><span class="toc-number">1.0.5.</span> <span class="toc-text">5、构建镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6%E3%80%81%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%AE%B9%E5%99%A8"><span class="toc-number">1.0.6.</span> <span class="toc-text">6、实例化容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7%E3%80%81%E6%9B%B4%E6%96%B0%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.0.7.</span> <span class="toc-text">7、更新步骤</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AD%98%E5%9C%A8%E9%97%AE%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">存在问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E5%A4%AA%E9%BA%BB%E7%83%A6%E5%95%A6%EF%BC%81"><span class="toc-number">2.0.1.</span> <span class="toc-text">1、太麻烦啦！</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%A5%BD%E5%83%8F%E9%99%A4%E4%BA%86%E9%BA%BB%E7%83%A6%E4%B9%9F%E6%B2%A1%E5%95%A5%E4%BA%86"><span class="toc-number">2.0.2.</span> <span class="toc-text">2、好像除了麻烦也没啥了</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88"><span class="toc-number">3.</span> <span class="toc-text">优化方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81docker-maven-plugin"><span class="toc-number">3.0.1.</span> <span class="toc-text">1、docker-maven-plugin</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E9%85%8D%E7%BD%AESSH%E8%BF%9E%E6%8E%A5"><span class="toc-number">3.0.2.</span> <span class="toc-text">2、配置SSH连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E7%BC%96%E5%86%99bat%E8%84%9A%E6%9C%AC"><span class="toc-number">3.0.3.</span> <span class="toc-text">3、编写bat脚本</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/default_top.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Yozuru</div><div class="footer_custom_text">Hi, welcome to my blog.</br><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">豫ICP备2023018923号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.textContent = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '1gRcPIUcCbZVQE6BdQZFSn80-gzGzoHsz',
+      appKey: 'urPscmzTqJuEnp3LDCdod6pz',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>
