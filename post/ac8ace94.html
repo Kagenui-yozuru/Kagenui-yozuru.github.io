@@ -1,0 +1,331 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Kotlin与Spring Boot中非空校验失效的解决方案 | Yozuru's Blog</title><meta name="author" content="Yozuru"><meta name="copyright" content="Yozuru"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="最近在项目中遇到了一个令人困惑的问题，涉及到Kotlin的非空类型和Spring Boot的校验注解。在处理JSON请求时，我发现Kotlin的非空类型和JSR380的@NotNull注解都没有如预期那样生效。这让我深入探索了Kotlin与Spring Boot在反序列化和校验过程中的一些细节。 问题场景我有一个SignInDTO数据类，用于处理用户的签到请求。代码如下： 12345678910c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin与Spring Boot中非空校验失效的解决方案">
+<meta property="og:url" content="https://yozuru.cn/post/ac8ace94.html">
+<meta property="og:site_name" content="Yozuru&#39;s Blog">
+<meta property="og:description" content="最近在项目中遇到了一个令人困惑的问题，涉及到Kotlin的非空类型和Spring Boot的校验注解。在处理JSON请求时，我发现Kotlin的非空类型和JSR380的@NotNull注解都没有如预期那样生效。这让我深入探索了Kotlin与Spring Boot在反序列化和校验过程中的一些细节。 问题场景我有一个SignInDTO数据类，用于处理用户的签到请求。代码如下： 12345678910c">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yozuru.cn/img/avatar.jpg">
+<meta property="article:published_time" content="2024-10-23T03:47:33.000Z">
+<meta property="article:modified_time" content="2024-10-23T07:08:52.393Z">
+<meta property="article:author" content="Yozuru">
+<meta property="article:tag" content="Kotlin">
+<meta property="article:tag" content="Debug">
+<meta property="article:tag" content="Spring Boot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yozuru.cn/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yozuru.cn/post/ac8ace94.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"HY3533WS6D","apiKey":"a2319d076c1243f0f625c769dfc80ecd","indexName":"blog_search","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":300},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Kotlin与Spring Boot中非空校验失效的解决方案',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-23 15:08:52'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/default_top.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Yozuru's Blog"><img class="site-icon" src="/img/favicon.png"/><span class="site-name">Yozuru's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/message/"><i class="fa-fw fas fa-comment"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Kotlin与Spring Boot中非空校验失效的解决方案</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-23T03:47:33.000Z" title="发表于 2024-10-23 11:47:33">2024-10-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-23T07:08:52.393Z" title="更新于 2024-10-23 15:08:52">2024-10-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/">编程日志</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E6%97%A5%E5%BF%97/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">问题记录</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title="Kotlin与Spring Boot中非空校验失效的解决方案"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/post/ac8ace94.html#post-comment"><span id="twikoo-count"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>最近在项目中遇到了一个令人困惑的问题，涉及到Kotlin的非空类型和Spring Boot的校验注解。在处理JSON请求时，我发现Kotlin的非空类型和JSR380的<code>@NotNull</code>注解都没有如预期那样生效。这让我深入探索了Kotlin与Spring Boot在反序列化和校验过程中的一些细节。</p>
+<h2 id="问题场景"><a href="#问题场景" class="headerlink" title="问题场景"></a>问题场景</h2><p>我有一个<code>SignInDTO</code>数据类，用于处理用户的签到请求。代码如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SignInDTO</span>(</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;项目ID&quot;</span>, example = <span class="string">&quot;1&quot;</span>)</span><br><span class="line">    <span class="meta">@field:NotNull</span>(value = <span class="number">1</span>, message = <span class="string">&quot;项目ID不能为空&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> projectId: <span class="built_in">Int</span>,</span><br><span class="line"></span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;坐标&quot;</span>, example = <span class="string">&quot;POINT(116.404 39.915)&quot;</span>)</span><br><span class="line">    <span class="meta">@field:NotNull</span>(message = <span class="string">&quot;坐标不能为空&quot;</span>)</span><br><span class="line">    <span class="meta">@field:JsonDeserialize</span>(using = GeometryDeserializer::<span class="keyword">class</span>)</span><br><span class="line">    <span class="keyword">val</span> coordinate: Point</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>在控制器中，我使用了<code>@Validated</code>和<code>@RequestBody</code>注解来接收和校验请求体：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping(<span class="string">&quot;/sign-in&quot;</span>)</span></span><br><span class="line"><span class="meta">@Operation(summary = <span class="string">&quot;签到&quot;</span>)</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">signIn</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="meta">@Validated</span> <span class="meta">@RequestBody</span> signInDTO: <span class="type">SignInDTO</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">)</span></span>: Result&lt;<span class="built_in">Nothing</span>&gt; &#123;</span><br><span class="line">    <span class="comment">// 处理逻辑</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当我发送一个缺少<code>projectId</code>或<code>coordinate</code>字段的JSON请求时，预期应该抛出校验异常。然而，<code>projectId</code>没有抛出异常，而是给了一个<code>0</code>的默认值。<code>coordinate</code>字段却能正常校验缺失。这让我感到疑惑。</p>
+<blockquote>
+<p><em>补充：预期的情况下，<code>@NotNull</code>是冗余的，因为如果存在null值，DTO对象在实例化的过程中就会抛出异常。而JSR380的校验则是发生在传入Controller方法的阶段。</em></p>
+</blockquote>
+<h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><p>经过调试和查阅资料，我发现问题的根源在于Kotlin的非空基本类型和Java的基本类型之间的映射。</p>
+<ul>
+<li><strong>Kotlin的非空基本类型（如<code>Int</code>）会被编译成Java的基本类型（如<code>int</code>）</strong>。在Java中，基本类型无法为<code>null</code>，如果JSON中缺少对应的字段，反序列化时会使用默认值（<code>0</code>）进行填充，这导致JSR380中<code>@NotNull</code>注解同时也失效了。</li>
+<li><strong><code>coordinate</code>字段是一个对象类型（<code>Point</code>）</strong>，在Kotlin中，它被处理为非空的引用类型。如果在JSON中缺少该字段，反序列化时会抛出<code>MissingKotlinParameterException</code>，这正是我们期望的行为。</li>
+</ul>
+<p>因此，<code>projectId</code>字段即使在请求中缺失，也会被默认为<code>0</code>，导致<code>@NotNull</code>或<code>@NotBlank</code>等注解无法生效。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>知道了问题的原因，解决方法也就清晰了。主要有两种思路：</p>
+<ol>
+<li><strong>将基本类型改为可空类型</strong>：</li>
+</ol>
+<p>将<code>Int</code>改为<code>Int?</code>，使其在Kotlin中编译为包装类型<code>Integer</code>，从而可以为<code>null</code>。这样，<code>@NotNull</code>注解就能在反序列化时正常校验。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SignInDTO</span>(</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;项目ID&quot;</span>, example = <span class="string">&quot;1&quot;</span>)</span><br><span class="line">    <span class="meta">@field:NotNull</span>(message = <span class="string">&quot;项目ID不能为空&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> projectId: <span class="built_in">Int</span>?,</span><br><span class="line">    <span class="comment">// 其他字段</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><strong>缺点</strong>：这会在代码中引入不必要的空值检查，因为在设计上<code>projectId</code>确实是非<code>null</code>的。</p>
+<ol start="2">
+<li><strong>使用<code>@Min</code>或<code>@Max</code>注解校验默认值</strong>：</li>
+</ol>
+<p>利用<code>@Min(1)</code>注解，确保<code>projectId</code>的值必须大于等于1。由于默认值为<code>0</code>，当请求中缺少<code>projectId</code>时，校验将无法通过。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SignInDTO</span>(</span><br><span class="line">    <span class="meta">@field:Schema</span>(description = <span class="string">&quot;项目ID&quot;</span>, example = <span class="string">&quot;1&quot;</span>)</span><br><span class="line">    <span class="meta">@field:Min</span>(value = <span class="number">1</span>, message = <span class="string">&quot;项目ID不能为空&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> projectId: <span class="built_in">Int</span>,</span><br><span class="line">    <span class="comment">// 其他字段</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><strong>优点</strong>：无需更改类型，也不引入额外的空值检查。</p>
+<p><strong>缺点</strong>：使用<code>@Min</code>或<code>@Max</code>判空是违反直觉的。</p>
+<h2 id="完善全局异常处理"><a href="#完善全局异常处理" class="headerlink" title="完善全局异常处理"></a>完善全局异常处理</h2><p>同时，为了捕获对象类型字段缺失时抛出的<code>MissingKotlinParameterException</code>，我还完善了全局异常处理器：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ExceptionHandler(HttpMessageNotReadableException::class)</span></span><br><span class="line"><span class="meta">@ResponseStatus(HttpStatus.BAD_REQUEST)</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">handleHttpMessageNotReadableException</span><span class="params">(e: <span class="type">HttpMessageNotReadableException</span>)</span></span>: Result&lt;<span class="built_in">Nothing</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">val</span> cause = e.cause</span><br><span class="line">    <span class="keyword">if</span> (cause <span class="keyword">is</span> MissingKotlinParameterException) &#123;</span><br><span class="line">        <span class="keyword">val</span> missingField = cause.parameter.name</span><br><span class="line">        <span class="keyword">val</span> message = <span class="string">&quot;字段 <span class="variable">$missingField</span> 不能为空&quot;</span></span><br><span class="line">        <span class="keyword">return</span> fail(HttpCode.BAD_REQUEST.code, message)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> fail(HttpCode.BAD_REQUEST.code, e.message ?: HttpCode.BAD_REQUEST.message)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，当对象类型字段缺失时，程序会返回明确的错误提示，指明具体是哪个字段缺失。</p>
+<p>顺便贴上应对JSR380校验失败时抛出<code>MethodArgumentNotValidException</code>的异常处理器：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ResponseStatus(HttpStatus.BAD_REQUEST)</span></span><br><span class="line"><span class="meta">@ExceptionHandler(MethodArgumentNotValidException::class)</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">illegalParameterException</span><span class="params">(e: <span class="type">MethodArgumentNotValidException</span>)</span></span>: Result&lt;<span class="built_in">Nothing</span>&gt; &#123;</span><br><span class="line">    <span class="keyword">val</span> message = e.bindingResult.fieldErrors</span><br><span class="line">        .joinToString(<span class="string">&quot;; &quot;</span>) &#123; <span class="string">&quot;<span class="subst">$&#123;it.defaultMessage&#125;</span>&quot;</span> &#125;</span><br><span class="line">    <span class="keyword">return</span> fail(HttpCode.BAD_REQUEST.code, message)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>Kotlin中的基本类型，如<code>Int</code>和<code>Int?</code>在编译时分别对应Java中的基本类型<code>int</code>和包装类型<code>Integer</code>，这在性能和空值安全性之间做了一个权衡。</p>
+<ul>
+<li><strong>性能考量</strong>：基本类型<code>int</code>的设计初衷是为了更高效的内存使用和性能优化。Java虚拟机处理基本类型时，不需要进行额外的装箱和拆箱操作，这在大量数据处理或性能敏感的场景下显得尤为重要。因此，Kotlin将非空的<code>Int</code>直接编译为<code>int</code>，继承了Java的这一优势。对于不涉及空值的场景，这种设计是合理且高效的。</li>
+<li><strong>空值安全</strong>：然而，Kotlin的设计哲学之一是<strong>空值安全</strong>，即通过类型系统在编译期尽可能地消除空指针异常（NullPointerException）。因此，Kotlin提供了可空类型<code>Int?</code>，对于可空类型，Kotlin强制要求开发者显式地处理 null 值，从而在编译时捕获潜在的空引用错误，避免了 Java 中常见的 NullPointerException 问题。</li>
+<li><strong>设计权衡</strong>：这一设计在性能和安全性之间做了权衡。虽然<code>Int</code>的非空设计在大多数情况下保障了性能，但在特定场景下（如反序列化），它可能会导致意外的行为，比如我们遇到的反序列化时默认值为<code>0</code>的问题。在这些场景下，编译后的<code>int</code>由于不能为<code>null</code>，反而打破了我们对数据校验的期望。相比之下，<code>Int?</code>虽然增加了空值处理的复杂性，但允许更灵活的空值校验。</li>
+</ul>
+<hr>
+<p>在StackOverflow上，我发现了一个类似的问题，并将我的解决方案分享了上去：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/51045103/kotlin-spring-boot-default-value-for-int-field-from-json/79116154#79116154">Kotlin + Spring Boot default value for Int field from JSON</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://yozuru.cn">Yozuru</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yozuru.cn/post/ac8ace94.html">https://yozuru.cn/post/ac8ace94.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yozuru.cn" target="_blank">Yozuru's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Kotlin/">Kotlin</a><a class="post-meta__tags" href="/tags/Debug/">Debug</a><a class="post-meta__tags" href="/tags/Spring-Boot/">Spring Boot</a></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/post/19d0719.html" title="Kotlin Data Class 与 MyBatis 兼容性问题的解决"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-15</div><div class="title">Kotlin Data Class 与 MyBatis 兼容性问题的解决</div></div></a></div><div><a href="/post/8cd3e59c.html" title="SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-01</div><div class="title">SpringBoot中@Async方法未使用自动配置的ThreadPoolTaskExecutor线程池</div></div></a></div><div><a href="/post/62ea1481.html" title="Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-14</div><div class="title">Swagger2、Swagger3、SpringFox、OpenApi这些都是什么？目前接口文档的最佳实现是什么？</div></div></a></div><div><a href="/post/6f1d7a0f.html" title="如何优雅地把SpringBoot项目部署到服务端Docker"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">如何优雅地把SpringBoot项目部署到服务端Docker</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Twikoo</span><span class="switch-btn"></span><span class="second-comment">Valine</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E5%9C%BA%E6%99%AF"><span class="toc-number">1.</span> <span class="toc-text">问题场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">原因分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">3.</span> <span class="toc-text">解决方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E5%96%84%E5%85%A8%E5%B1%80%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">完善全局异常处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">思考</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('/img/default_top.png')"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Yozuru</div><div class="footer_custom_text">Hi, welcome to my blog.</br><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn">豫ICP备2023018923号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"></div><div id="rightside-config-show"><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://yozuru.cn/twikoo/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.textContent = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '1gRcPIUcCbZVQE6BdQZFSn80-gzGzoHsz',
+      appKey: 'urPscmzTqJuEnp3LDCdod6pz',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Twikoo' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/algoliasearch/dist/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instantsearch.js/dist/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div></body></html>
